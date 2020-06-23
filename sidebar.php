@@ -54,7 +54,7 @@
                     {
                         ?>
                     <li class="<?php if(isset($active4)){echo $active4;}?>">
-                        <a href="cheque.php"><img src="images/payroll.png" class="fa"></img>Solicitar PagoDirecto</a>
+                        <a href="cheque.php"><img src="images/payroll.png" class="fa"></img>Solicitar Gasto</a>
                     </li>
                     <?php
                     }

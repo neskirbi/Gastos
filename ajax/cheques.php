@@ -54,7 +54,9 @@ ini_set('display_errors', '1');
         $num=mysqli_fetch_array($numero);        
         $numrows= intval($num['filas']);
 
-        $sql="SELECT che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,che.t_cheque,che.concepto,che.programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, che.tipopago FROM cheques as che join user as usu on usu.id=che.beneficiario  where $filtro ";
+        $sql="SELECT che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,che.t_cheque,che.concepto,che.programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, che.tipopago 
+        FROM cheques as che 
+        join user as usu on usu.id=che.beneficiario  where $filtro ";
 
         $query = mysqli_query($con, $sql);
 
@@ -133,14 +135,20 @@ ini_set('display_errors', '1');
 							$tipop=$r['tipopago'];
 							
                             $consulta="SELECT name from programas where id='".$programa."' ";
-                            $sql_data=mysqli_query($con ,$consulta) ;
-                            $pro=mysqli_fetch_array($sql_data);
-                            $programa=$pro['name'];
+                            if($sql_data=mysqli_query($con ,$consulta)){
+                                $pro=mysqli_fetch_array($sql_data);
+                                $programa=$pro['name'];
+                            }
+                            
 
 							$consulta_ctp="SELECT name from t_pago where id='".$tipop."' ";
-                            $sql_data=mysqli_query($con ,$consulta_ctp) ;
-                            $tpag=mysqli_fetch_array($sql_data);
-                            $tipopago=$tpag['name'];
+                            if($tipop!="0"){
+                                $sql_data=mysqli_query($con ,$consulta_ctp);
+                                $tpag=mysqli_fetch_array($sql_data);
+                                $tipopago=$tpag['name'];
+                            }
+                             
+                            
 
 
                             $fecha_entrega=$r['fecha_confirm'];

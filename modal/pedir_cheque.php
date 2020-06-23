@@ -1,7 +1,6 @@
     <form   id="p_cheque" >
    <div> <!-- Modal -->
     <?php
-    session_start();
     $hidden="";
     if ($_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="2") {
         $titulo1="Solicitar Reembolso";
@@ -9,7 +8,7 @@
         $consulta_tcheque="SELECT * from t_cheque where id='3'";
         $consulta_pro="SELECT * from Programas where id='".$_SESSION['programa']."'";
         //$consulta_ben="SELECT * from user  where id='".$_SESSION['user_id']."' ";
-        $consulta_ben="SELECT * from user where   programa='".$_SESSION['programa']."' order by name asc";
+        //$consulta_ben="SELECT * from user where   programa='".$_SESSION['programa']."' order by name asc";
         $hidden="visibility: hidden;";
         
     }else
@@ -19,8 +18,8 @@
         $consulta_pro="SELECT * from Programas";
 		$consulta_pa="SELECT * from t_pago";
         $consulta_tcheque="SELECT * from t_cheque where id!='3'";
-        $consulta_ben="SELECT * from user where programa='".$_SESSION['programa']."' order by name asc";
     }
+        $consulta_ben="SELECT * from proveedores ";
 
     $where="";  
     
@@ -99,6 +98,25 @@
                                    
                                 </td>
                             </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="col-md-4 pull-left" style="width:100%">
+                                        <br>
+                                         <select required="" id="se_cobra_a_list" class="form-control" style="width: 40%; display: inline-block;" onchange="CargarGastosCedis(this);"> 
+                                         <option selected="" value="">Se Cobra A</option>
+                                            <?php
+                                            $consulta="SELECT * from se_cobra_a order by id_se_cobra_a asc";
+                                            $user = mysqli_query($con,$consulta);
+                                            while ($data_user=mysqli_fetch_array($user)) { ?>
+                                            <option value="<?php echo $data_user['id_se_cobra_a']; ?>"><?php echo $data_user['name']; ?></option>
+                                            <?php } ?>                                       
+                                        </select>
+                                        <select required="" id="cedis_gastos_list" class="form-control" style="width: 40%; display: inline-block;" disabled="" ></select>
+                                    </div>
+                                    
+                                   
+                                </td>
+                            </tr>
 				
 						    <tr>
                               <td colspan="2">
@@ -141,9 +159,36 @@
 									
 							  </td>
                             </tr>
+                            <tr>
+                                <td colspan="2">
+                                     <br>
+                                <div class="col-md-10 pull-left" style="width:47%" >
+                                    
+                                        <select class="form-control" id="idben" name="idben" required onchange="benefi(this);" style="<?php echo $hidden; ?>" >
+                                            <option selected="" value="">-- Beneficiario --</option>
+                                            <?php
+
+                                            $user = mysqli_query($con,$consulta_ben);
+                                            while ($data_user=mysqli_fetch_array($user)) { ?>
+                                            <option value="<?php echo $data_user['cuenta']; ?>"><?php echo $data_user['nombre']; ?></option>
+                                            <?php } ?>
+                                            <option value="0">Otro</option>
+                                        </select>   
+                                </div>
+
+                                 <br>
+                                
+                     
+                                <div class="col-md-10 pull-left" id="cont_ben" style="width:47%; display: none;">
+                                        <input class="form-control" value="0" type="text" id="nombreben" name="nombreben" placeholder="Nombre">
+                                </div> 
+
+                                </td>
+                            </tr>
 						
 						<tr>
                                 <td colspan="2">
+                               
                                 <br>
 								  <div class="col-md-10 pull-left" style="width:33%">
 								    <h4 class="modal-title" style="font-size:15px">Numero de cuenta: </h4>
@@ -160,7 +205,7 @@
                                     ?>
 
                                          <div class="col-md-5 pull-left" style="<?php echo $hidden; ?>; " style=width:60% >
-                                           <input type="text" name="Cuenta" class="form-control" placeholder="Cuenta" required="required" >
+                                           <input id="cuenta" type="text" name="Cuenta" class="form-control" placeholder="Cuenta" required="required" >
                                         </div>                          
                                 </td>
                             </tr>
@@ -189,37 +234,38 @@
                             </tr>
 						
 						
-						 <tr>
-                                <td colspan="2">
-                                <br>
-                                <div class="col-md-10 pull-left" style="width:47%" >
-                                    
-                                        <select class="form-control" id="idben" name="idben" required onchange="benefi(this);" style="<?php echo $hidden; ?>" >
-                                            <option selected="" value="">-- Beneficiario --</option>
-                                            <?php
-
-                                            $user = mysqli_query($con,$consulta_ben);
-                                            while ($data_user=mysqli_fetch_array($user)) { ?>
-                                            <option value="<?php echo $data_user['id']; ?>"><?php echo $data_user['name']; ?></option>
-                                            <?php } ?>
-                                            <option value="0">Otro</option>
-                                        </select>   
-                                </div>
-                     
-                                <div class="col-md-10 pull-left" id="cont_ben" style="width:47%">
-                                        <input class="form-control" value="0" type="text" id="nombreben" name="nombreben" placeholder="Nombre">
-                                </div>                                         
-                                    
-                                </td>
-                            </tr>
+						
 						
 						     <tr>
                                 <td colspan="2">
                                 <br>
                                     <div class="col-md-10 pull-left" style="width:95%">
-                                           <input type="text" name="concepto" class="form-control" placeholder="Concepto" required="required" >
+                                           <input type="text" id="concepto" name="concepto" class="form-control" placeholder="Concepto" required="required" >
                                     </div>
 								 </td>
+                            </tr>
+
+                             <tr>
+                                <td colspan="2">
+                                <br>
+                                    <div class="col-md-10 pull-left" style="width:95%">
+                                           <input type="text" id="folio" name="folio" class="form-control" placeholder="Folio" required="required" onkeyup="GenerarSantanderFolio();" >
+                                    </div>
+                                 </td>
+                            </tr>
+
+                             <tr>
+                                <td colspan="2">
+                                <br>
+                                    <div class="col-md-10 pull-left" style="width:65%">
+                                           <input type="text" name="FolioSantander" id="FolioSantander" class="form-control" placeholder="FolioSantander" required="required" >
+                                    </div>
+
+                                    <div class="col-md-10 pull-left" style="width:30%">
+                                        <input type="checkbox" name="referencia" id="referencia"  placeholder="referencia" onchange="GenerarSantanderFolio();" >
+                                        <label>Referencia</label>
+                                    </div>
+                                 </td>
                             </tr>
 						
 						
@@ -283,7 +329,7 @@
 
 function benefi(este)
 {
-    console.log(este.value);
+    //console.log(este.value);
     var div=document.getElementById("cont_ben");
     var input=document.getElementById("nombreben");
     var select_ben=document.getElementById("idben");
@@ -296,11 +342,71 @@ function benefi(este)
     }
     else
     {
+        $('#cuenta').val($(este).val());
         div.style="display:none;";
         input.required=false;
         input.value="0";
         select_ben.required=true;
     }
+}
+
+/*function CargarSecobraA(){
+    $.post("ajax/se_cobra_a_list.php",{},function(result){
+        //console.log(result);
+        var obj=JSON.parse(result),html='<option value="0">Se Cobra A</option>';
+        for(var i in obj){
+            //console.log(obj[i]);
+            html+='<option value="'+obj[i].id_se_cobra_a+'">'+obj[i].name+'</option>';
+        }
+        $('#se_cobra_a_list').html(html);
+    });
+}
+CargarSecobraA();*/
+
+function GenerarSantanderFolio(){
+    console.log($('#referencia').is(":checked"));
+    if (!$('#referencia').is(":checked"))
+    {
+        var folio=$('#folio').val();
+        var secobra=$('#se_cobra_a_list').val();
+        var benefi=$('#idben').val();
+        //var secobra=$('#se_cobra_a_list option:selected').text();
+        //var benefi=$('#idben option:selected').text();
+
+        if(folio!=""){
+            $('#FolioSantander').val(folio+"-"+secobra+"-"+benefi);
+        }else{
+             $('#FolioSantander').val("");
+        }
+    }else{
+       
+        $('#FolioSantander').val($('#concepto').val());
+        
+    }
+
+    
+}
+
+
+function CargarGastosCedis(este){
+
+    var id_se_cobra_a=$(este).val();
+    if(id_se_cobra_a=="0"){
+        $('#cedis_gastos_list').prop('disabled', true);
+        $('#cedis_gastos_list').html('<option value="0">CEDIS Gastos</option>');
+    }else{
+        $('#cedis_gastos_list').prop('disabled', false);
+        $.post("ajax/cedis_gastos_list.php",{id_se_cobra_a:id_se_cobra_a},function(result){
+        console.log(result);
+        var obj=JSON.parse(result),html='<option value="0">CEDIS Gastos</option>';
+        for(var i in obj){
+            console.log(obj[i]);
+            html+='<option value="'+obj[i].id_se_cobra_a+'">'+obj[i].name+'</option>';
+        }
+        $('#cedis_gastos_list').html(html);
+    });
+    }
+    
 }
 
 
