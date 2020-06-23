@@ -38,16 +38,8 @@
 
                     <?php
                     }
-                ///////////////////////////////
+               
                     
-                    if($_SESSION['user_tipo']=="0" || $_SESSION['user_tipo']=="4"  )
-                    {
-                        ?>
-                    <li class="<?php if(isset($active4)){echo $active4;}?>">
-                        <a href="cheque.php"><img src="images/payroll.png" class="fa"></img>Solicitar GastoComprobar</a>
-                    </li>
-                    <?php
-                    }
                     ////////////////////////////////////////
 
 					if($_SESSION['user_tipo']=="0" || $_SESSION['user_tipo']=="4"  )

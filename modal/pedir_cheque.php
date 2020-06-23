@@ -102,7 +102,7 @@
                                 <td colspan="2">
                                     <div class="col-md-4 pull-left" style="width:100%">
                                         <br>
-                                         <select required="" id="se_cobra_a_list" class="form-control" style="width: 40%; display: inline-block;" onchange="CargarGastosCedis(this);"> 
+                                         <select required id="se_cobra_a_list" name="se_cobra_a_list" class="form-control" style="width: 40%; display: inline-block;" onchange="CargarGastosCedis(this);"> 
                                          <option selected="" value="">Se Cobra A</option>
                                             <?php
                                             $consulta="SELECT * from se_cobra_a order by id_se_cobra_a asc";
@@ -111,7 +111,7 @@
                                             <option value="<?php echo $data_user['id_se_cobra_a']; ?>"><?php echo $data_user['name']; ?></option>
                                             <?php } ?>                                       
                                         </select>
-                                        <select required="" id="cedis_gastos_list" class="form-control" style="width: 40%; display: inline-block;" disabled="" ></select>
+                                        <select required id="cedis_gastos_list" name="cedis_gastos_list" class="form-control" style="width: 40%; display: inline-block;" disabled="" ></select>
                                     </div>
                                     
                                    
@@ -172,7 +172,7 @@
                                             while ($data_user=mysqli_fetch_array($user)) { ?>
                                             <option value="<?php echo $data_user['cuenta']; ?>"><?php echo $data_user['nombre']; ?></option>
                                             <?php } ?>
-                                            <option value="0">Otro</option>
+                                            <!--<option value="0">Otro</option>-->
                                         </select>   
                                 </div>
 
@@ -258,7 +258,7 @@
                                 <td colspan="2">
                                 <br>
                                     <div class="col-md-10 pull-left" style="width:65%">
-                                           <input type="text" name="FolioSantander" id="FolioSantander" class="form-control" placeholder="FolioSantander" required="required" >
+                                           <input type="text" name="FolioSantander" id="FolioSantander" class="form-control" placeholder="FolioSantander" >
                                     </div>
 
                                     <div class="col-md-10 pull-left" style="width:30%">

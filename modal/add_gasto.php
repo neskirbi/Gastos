@@ -7,7 +7,6 @@
 <?php
 include"subir.php";
 
-    session_start();
     $hidden="";
    
         $consulta_tcheque="SELECT * from t_cheque where id='3'";

@@ -111,31 +111,31 @@ include "footer.php" ;
   
     var parametros = $(this).serialize();
      $.ajax({
-            type: "POST",
-            url: "action/pedir-cheque.php",
-            data: parametros,
-             beforeSend: function(objeto){
-                $("#result_user").html("Mensaje: Cargando...");
-              },
-            success: function(datos){
+        type: "POST",
+        url: "action/pedir-cheque.php",
+        data: parametros,
+        beforeSend: function(objeto){
+            $("#result_user").html("Mensaje: Cargando...");
+        },
+        success: function(datos){
 
-            datos=datos.split(",");
-           
-            id=datos[1];
-             datos=datos[0]+datos[2];
-            console.log("---->"+id);
-            get_mails(id*1,"Se ha solicitado un cheque para: {nombre} por un monto de: {monto}");
+        datos=datos.split(",");
+       
+        id=datos[1];
+         datos=datos[0]+datos[2];
+        console.log("---->"+id);
+        get_mails(id*1,"Se ha solicitado un cheque para: {nombre} por un monto de: {monto}");
 
-            $("#result_user").html(datos);
+        $("#result_user").html(datos);
 
-            var substring = "Error";
-            if(datos.indexOf(substring) == -1)
-            {
-                document.getElementById("p_cheque").reset();
-            }
-            
-            load(1);
-          }
+        var substring = "Error";
+        if(datos.indexOf(substring) == -1)
+        {
+            document.getElementById("p_cheque").reset();
+        }
+        
+        load(1);
+      }
     });
   event.preventDefault();
 })

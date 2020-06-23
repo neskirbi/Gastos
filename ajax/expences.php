@@ -265,7 +265,7 @@ ini_set('display_errors', '1');
          $user=$_REQUEST['user'];
          $date1=$_REQUEST['date1'];
          $date2=$_REQUEST['date2'];
-         $folio=$_REQUEST['folio'];
+         @$folio=$_REQUEST['folio'];
        
 
          if($_REQUEST['page']=="0")
@@ -356,11 +356,13 @@ if($user!="0")
 							
 							
 							$tipop=$r['tipopago'];
-		
-							$consulta_ctp="SELECT name from t_pago where id='".$tipop."' ";
-                            $sql_data=mysqli_query($con ,$consulta_ctp) ;
-                            $tpag=mysqli_fetch_array($sql_data);
-                            $tipopago=$tpag['name'];
+
+                            if($tipop!="0"){        
+                                $consulta_ctp="SELECT name from t_pago where id='".$tipop."' ";
+                                $sql_data=mysqli_query($con ,$consulta_ctp) ;
+                                $tpag=mysqli_fetch_array($sql_data);
+                                $tipopago=$tpag['name'];
+                            }
 		
 
                             $consulta="SELECT * from cheques where id='".$r['id_cheque']."'";
