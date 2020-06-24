@@ -274,7 +274,7 @@
                                 <br>
 
                                       <div class="col-md-5 pull-left">
-                                        <select class="form-control" id="clasificacion" name="clasificacion" required="required" >
+                                        <select class="form-control" id="clasificacion" name="clasificacion" required="required">
                                             <option selected="" value="">-- Seleccione clasificacion --</option>
                                             <?php
                                             $categories = mysqli_query($con,"select * from clasificacion");
@@ -286,13 +286,13 @@
 
 
 									  
-                                     <div class="col-md-5 pull-left">
-                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>" >
-                                            <option selected="" value="">-- Seleccione tipo de gasto --</option>
+                                    <div class="col-md-5 pull-left">
+                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos();">
+                                            <option value="">-- Seleccione tipo de gasto --</option>
                                             <?php
                                             $categories = mysqli_query($con,$consulta_tcheque);
                                             while ($cat=mysqli_fetch_array($categories)) { ?>
-                                            <option <?php echo $selec; ?> value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
+                                            <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
                                             <?php } ?>
                                         </select>
                                     </div> 
@@ -305,6 +305,7 @@
 
                             <tr>
                                 <td colspan="2">
+                                    <div id="contenedor_gastos"></div>
                                     
                                 </td>
                             </tr>
@@ -316,8 +317,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 					<button id="pedir_cheque" type="submit" class="btn btn-primary" name="Solicitar">
-                                      <span class="glyphicon glyphicon-ok"></span> Solicitar
-                                    </button>
+                      <span class="glyphicon glyphicon-ok"></span> Solicitar
+                    </button>
                 </div>
             </div>
         </div>
@@ -363,51 +364,7 @@ function benefi(este)
 }
 CargarSecobraA();*/
 
-function GenerarSantanderFolio(){
-    console.log($('#referencia').is(":checked"));
-    if (!$('#referencia').is(":checked"))
-    {
-        var folio=$('#folio').val();
-        var secobra=$('#se_cobra_a_list').val();
-        var benefi=$('#idben').val();
-        //var secobra=$('#se_cobra_a_list option:selected').text();
-        //var benefi=$('#idben option:selected').text();
 
-        if(folio!=""){
-            $('#FolioSantander').val(folio+"-"+secobra+"-"+benefi);
-        }else{
-             $('#FolioSantander').val("");
-        }
-    }else{
-       
-        $('#FolioSantander').val($('#concepto').val());
-        
-    }
-
-    
-}
-
-
-function CargarGastosCedis(este){
-
-    var id_se_cobra_a=$(este).val();
-    if(id_se_cobra_a=="0"){
-        $('#cedis_gastos_list').prop('disabled', true);
-        $('#cedis_gastos_list').html('<option value="0">CEDIS Gastos</option>');
-    }else{
-        $('#cedis_gastos_list').prop('disabled', false);
-        $.post("ajax/cedis_gastos_list.php",{id_se_cobra_a:id_se_cobra_a},function(result){
-        console.log(result);
-        var obj=JSON.parse(result),html='<option value="0">CEDIS Gastos</option>';
-        for(var i in obj){
-            console.log(obj[i]);
-            html+='<option value="'+obj[i].id_se_cobra_a+'">'+obj[i].name+'</option>';
-        }
-        $('#cedis_gastos_list').html(html);
-    });
-    }
-    
-}
 
 
     

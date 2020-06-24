@@ -16,6 +16,7 @@ $concepto=mysqli_real_escape_string($con,( $_POST['concepto']));
 $se_cobra_a_list=mysqli_real_escape_string($con,$_POST['se_cobra_a_list']);
 $cedis_gastos_list=mysqli_real_escape_string($con,$_POST['cedis_gastos_list']);
 $FolioSantander=mysqli_real_escape_string($con,$_POST['FolioSantander']);
+$folio=mysqli_real_escape_string($con,$_POST['folio']);
 $semana=mysqli_real_escape_string($con,( $_POST['semana']));
 $periodo=mysqli_real_escape_string($con,( $_POST['periodo']));
 $Cuenta=mysqli_real_escape_string($con,( $_POST['Cuenta']));
@@ -32,7 +33,7 @@ if($category=="3")
 	$status=0;
 }
 
-$consulta="INSERT into cheques (programa,monto,fecha,fecha_confirm,beneficiario,bennombre,concepto,t_cheque,status,no_cheque,solicitante,clasificacion,a_iva, semana, periodo, tipopago, cuenta,se_cobra_a_list,cedis_gastos_list,FolioSantander) values($programa,$monto,'$fecha','$fecha',$idben,'$bennombre','$concepto',$category,$status, '0', '$user_id', '$clasifica',0,'$semana', '$periodo', '$tipopago', '$Cuenta','$se_cobra_a_list','$cedis_gastos_list','$FolioSantander')";
+$consulta="INSERT into cheques (programa,monto,fecha,fecha_confirm,beneficiario,bennombre,concepto,t_cheque,status,no_cheque,solicitante,clasificacion,a_iva, semana, periodo, tipopago, cuenta,se_cobra_a_list,cedis_gastos_list,FolioSantander,folio) values($programa,$monto,'$fecha','$fecha',$idben,'$bennombre','$concepto',$category,$status, '0', '$user_id', '$clasifica',0,'$semana', '$periodo', '$tipopago', '$Cuenta','$se_cobra_a_list','$cedis_gastos_list','$FolioSantander','$folio')";
 if($sql=mysqli_query($con,$consulta))
 {
 	$idcheque= mysqli_insert_id($con);
@@ -67,15 +68,15 @@ if($sql=mysqli_query($con,$consulta))
         }
 	}
 
-	}else{
-		?>
-		<div class="alert alert-error" role="alert">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			<strong>¡Error!, Verifique los datos</strong>
-			
-		</div>
-		<?php
-	}
+}else{
+	?>
+	<div class="alert alert-error" role="alert">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<strong>¡Error!, Verifique los datos</strong>
+		
+	</div>
+	<?php
+}
 ?>
 
 

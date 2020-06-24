@@ -105,6 +105,7 @@ include "footer.php" ;
 <script type="text/javascript" src="js/VentanaCentrada.js"></script>
 <script type="text/javascript" src="js/cheques.js"></script>
 <script>
+    
  $( "#p_cheque" ).submit(function( event ) {
     
 
@@ -122,8 +123,10 @@ include "footer.php" ;
         datos=datos.split(",");
        
         id=datos[1];
-         datos=datos[0]+datos[2];
+        ultimo_id=id;
+        datos=datos[0]+datos[2];
         console.log("---->"+id);
+        CargarGastos(id);
         get_mails(id*1,"Se ha solicitado un cheque para: {nombre} por un monto de: {monto}");
 
         $("#result_user").html(datos);
@@ -138,7 +141,7 @@ include "footer.php" ;
       }
     });
   event.preventDefault();
-})
+});
 
 function load(page){
             var q= $("#q").val();
@@ -279,5 +282,91 @@ function send_mails(mails,mensaje)
     $.post("http://cbd.mine.nu/mail/send_mails.php",{mails:mails,mensaje:mensaje} ,function (result){
     alert( result);
   });   
+}
+
+
+function GenerarSantanderFolio(){
+    console.log($('#referencia').is(":checked"));
+    if (!$('#referencia').is(":checked"))
+    {
+        var folio=$('#folio').val();
+        var secobra=$('#se_cobra_a_list').val();
+        var benefi=$('#idben').val();
+        //var secobra=$('#se_cobra_a_list option:selected').text();
+        //var benefi=$('#idben option:selected').text();
+
+        if(folio!=""){
+            $('#FolioSantander').val(folio+"-"+secobra+"-"+benefi);
+        }else{
+             $('#FolioSantander').val("");
+        }
+    }else{
+       
+        $('#FolioSantander').val($('#concepto').val());
+        
+    }
+
+    
+}
+
+
+function CargarGastosCedis(este){
+
+    var id_se_cobra_a=$(este).val();
+    if(id_se_cobra_a=="0"){
+        $('#cedis_gastos_list').prop('disabled', true);
+        $('#cedis_gastos_list').html('<option value="0">CEDIS Gastos</option>');
+    }else{
+        $('#cedis_gastos_list').prop('disabled', false);
+        $.post("ajax/cedis_gastos_list.php",{id_se_cobra_a:id_se_cobra_a},function(result){
+        console.log(result);
+        var obj=JSON.parse(result),html='<option value="0">CEDIS Gastos</option>';
+        for(var i in obj){
+            console.log(obj[i]);
+            html+='<option value="'+obj[i].id_se_cobra_a+'">'+obj[i].name+'</option>';
+        }
+        $('#cedis_gastos_list').html(html);
+    });
+    }
+    
+}
+
+
+var NumGastos=0;
+function InicializaGastos(){
+    NumGastos=0;
+    var html='<br><div><button type="button" class="btn btn-primary" onclick="CrearGasto();"><i class="fa fa-plus-circle"></i> Agregar Gasto</button>';
+    html+='</div>';
+
+    $('#contenedor_gastos').html(html);
+    CrearGasto();
+}
+
+function CrearGasto(){
+    var html='<div style=" border-bottom:solid 1px #ABB1BA;" data-id="'+NumGastos+'"><br>';
+    html+='<label class="pull-right" style=" display:inline-block; " onclick="QuitarGasto(this);">X</label>';
+    html+='<br><label style="width:200px;">Fecha de Consumo</label><input id="FC'+NumGastos+'" class="form-control" style=" display:inline-block; width:180px;" type="date" name=""><br>';
+    html+='<br><label style="width:200px;">Fecha de Factura</label><input id="FF'+NumGastos+'" class="form-control" style=" display:inline-block; width:180px;" type="date" name=""><br>';
+    html+='<br><label style="width:200px;">Descripción</label><input id="D'+NumGastos+'" class="form-control" style=" display:inline-block; width:20%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Importe antes de IVA</label><input id="IAI'+NumGastos+'" class="form-control" style=" display:inline-block; width:20%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Deducible</label><input id="D'+NumGastos+'" style="width:20%;" type="checkbox" name=""><br>';
+    html+='<br><label style="width:200px;">IVA</label><input id="I'+NumGastos+'" class="form-control" style=" display:inline-block; width:20%;" type="text" name="">';
+    html+='</div>';
+    $('#contenedor_gastos').append(html);
+    NumGastos++;
+}
+
+function QuitarGasto(este){
+    $(este).parent().remove();
+    
+}
+
+function CargarGastos(){
+    $('#contenedor_gastos').children().each(function(){
+        if($(this).data('id')!=undefined){
+            console.log($(this).data('id'));
+        }
+        
+    });
 }
 </script>
