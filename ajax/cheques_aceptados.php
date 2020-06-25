@@ -22,8 +22,8 @@ ini_set('display_errors', '1');
 
         return $conf;
     } 
-	
-	
+    
+    
     
     $daterange = mysqli_real_escape_string($con,(strip_tags($_REQUEST['daterange'], ENT_QUOTES)));
     $action = (isset($_REQUEST['action']) && $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -31,7 +31,7 @@ ini_set('display_errors', '1');
 
     if( $_SESSION['user_tipo']=="1" )
     {
-      $filtro=" (che.status='1') or che.fecha='$daterange'  ";
+      $filtro=" (che.status='2') or che.fecha='$daterange'  ";
 
     }else if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="5" || $_SESSION['user_tipo']=="4" )
     {
@@ -39,7 +39,7 @@ ini_set('display_errors', '1');
 
     }else if($_SESSION['user_tipo']=="0")
     {
-    	$filtro=" ( che.programa!='0')  ";
+        $filtro=" ( che.programa!='0')  ";
     }
 
     if($action == 'ajax'){
@@ -51,9 +51,14 @@ ini_set('display_errors', '1');
 
         
 
-        $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,che.t_cheque,che.concepto,che.programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, che.tipopago 
-        FROM cheques as che 
-        join user as usu on usu.id=che.beneficiario  where $filtro ";
+        $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
+        tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago 
+        FROM gas.cheques as che 
+        left join gas.user as usu on usu.id=che.beneficiario 
+        left join gas.t_cheque as tche on tche.id=che.t_cheque 
+        left join gas.programas as pro on pro.id=che.programa 
+        left join gas.t_pago as tpag on tpag.id=che.tipopago  
+        where $filtro ";
 
 
         $query = mysqli_query($con, $sql); 
@@ -114,36 +119,18 @@ ini_set('display_errors', '1');
                             $name=$r['bennombre'];
                         }
 
-                        $consulta="SELECT name from t_cheque where id='".$r['t_cheque']."' ";
-                        $sql_data=mysqli_query($con ,$consulta) ;
-                        $nametemp=mysqli_fetch_array($sql_data);
-                        $t_gasto=$nametemp['name'];
+                        
+                        $t_gasto=$r['t_cheque'];
                         
 
                         $periodo=$r['periodo'];
                         $semana=$r['semana'];
                         $concepto=$r['concepto'];
-                        $programa=$r['programa'];
+                        //$programa=$r['programa'];
                         $Cuenta=$r['Cuenta'];
-                        $tipop=$r['tipopago'];
-                        
-                        $consulta="SELECT name from programas where id='".$programa."' ";
-                        if($sql_data=mysqli_query($con ,$consulta)){
-                            $pro=mysqli_fetch_array($sql_data);
-                            $programa=$pro['name'];
-                        }
-                        
-
-                        $consulta_ctp="SELECT name from t_pago where id='".$tipop."' ";
-                        if($tipop!="0"){
-                            $sql_data=mysqli_query($con ,$consulta_ctp);
-                            $tpag=mysqli_fetch_array($sql_data);
-                            $tipopago=$tpag['name'];
-                        }
-                         
-                        
-
-
+                        //$tipop=$r['tipopago'];
+                        $programa=$r['programa']; 
+                        $tipopago=$r['tipopago'];
                         $fecha_entrega=$r['fecha_confirm'];
                         $fecha=$r['fecha'];
             ?>

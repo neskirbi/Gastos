@@ -59,6 +59,14 @@
                     <li class="<?php if(isset($active4)){echo $active4;}?>">
                         <a href="cheque.php"><img src="images/payroll.png" class="fa"></img>Autorizar Cheque</a>
                     </li>
+
+                    <li class="<?php if(isset($active4)){echo $active4;}?>">
+                        <a href="cheques_aceptados.php"><img src="images/payroll.png" class="fa"></img>Cheques Aceptados</a>
+                    </li>
+
+                    <li class="<?php if(isset($active4)){echo $active4;}?>">
+                        <a href="cheques_rechazados.php"><img src="images/payroll.png" class="fa"></img>Cheques Rechazados</a>
+                    </li>
                     <?php
                     }
                     ////////////////////////////////
