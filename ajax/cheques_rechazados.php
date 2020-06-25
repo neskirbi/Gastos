@@ -22,8 +22,8 @@ ini_set('display_errors', '1');
 
         return $conf;
     } 
-    
-    
+	
+	
     
     $daterange = mysqli_real_escape_string($con,(strip_tags($_REQUEST['daterange'], ENT_QUOTES)));
     $action = (isset($_REQUEST['action']) && $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -39,7 +39,7 @@ ini_set('display_errors', '1');
 
     }else if($_SESSION['user_tipo']=="0")
     {
-        $filtro=" ( che.programa!='0')  ";
+    	$filtro=" ( che.programa!='0')  ";
     }
 
     if($action == 'ajax'){
@@ -51,13 +51,12 @@ ini_set('display_errors', '1');
 
         
 
-        $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
-        tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago 
-        FROM gas.cheques as che 
-        left join gas.user as usu on usu.id=che.beneficiario 
-        left join gas.t_cheque as tche on tche.id=che.t_cheque 
-        left join gas.programas as pro on pro.id=che.programa 
-        left join gas.t_pago as tpag on tpag.id=che.tipopago  
+        $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,tche.name as t_cheque,che.concepto,pro.programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.tipopago 
+        FROM cheques as che 
+        left join user as usu on usu.id=che.beneficiario
+        left join t_cheque as tche on tche.id=che.t_cheque
+        left join programas as pro on pro.id=che.programa  
+        left join t_pago as tpag on tpag.id=che.tipopago  
         where $filtro ";
 
 
