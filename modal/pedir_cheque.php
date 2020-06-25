@@ -287,7 +287,7 @@
 
 									  
                                     <div class="col-md-5 pull-left">
-                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos();">
+                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos(this);">
                                             <option value="">-- Seleccione tipo de gasto --</option>
                                             <?php
                                             $categories = mysqli_query($con,$consulta_tcheque);

@@ -6,7 +6,7 @@ session_start();
 if (isset($_GET['id']))
 {
   $idcheque=$_GET['id'];
-  $no_cheque=intval($_GET['no_cheque']);
+  $no_cheque=intval($_GET['nocheque']);
   $fecha_confirm=date('Y-m-d');
 
   $consulta="SELECT t_cheque from cheques where id='$idcheque' ";

@@ -57,7 +57,7 @@
 </style>
 
 	<title></title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
 </head>
 <body>
 <div style="z-index: 15; width: 75%; position: fixed; border: solid #000 0px; height: 30px; bottom: 0px; left: 0px; display: inline-block; " id="contenedor">

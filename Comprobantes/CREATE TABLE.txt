@@ -1,0 +1,41 @@
+'CREATE TABLE `cheques` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `no_cheque` int(11) NOT NULL,
+  `programa` int(2) NOT NULL,
+  `monto` float NOT NULL,
+  `fecha` varchar(10) NOT NULL,
+  `fecha_confirm` varchar(10) NOT NULL,
+  `solicitante` int(11) NOT NULL,
+  `beneficiario` int(11) NOT NULL,
+  `bennombre` varchar(150) NOT NULL,
+  `concepto` varchar(500) NOT NULL,
+  `t_cheque` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `clasificacion` int(11) NOT NULL,
+  `a_iva` float NOT NULL,
+  `pago` int(11) DEFAULT ''0'',
+  `fecha_pago` date DEFAULT NULL,
+  `periodo` int(11) NOT NULL,
+  `semana` varchar(50) NOT NULL,
+  `tipopago` int(11) NOT NULL,
+  `cuenta` varchar(50) NOT NULL,
+  `se_cobra_a_list` int(11) DEFAULT NULL,
+  `cedis_gastos_list` int(11) DEFAULT NULL,
+  `FolioSantander` varchar(500) DEFAULT NULL,
+  `folio` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1793 DEFAULT CHARSET=utf8'
+
+
+'CREATE TABLE `se_cobra_a` (
+  `id_se_cobra_a` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_se_cobra_a`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'
+
+'CREATE TABLE `cedis_gastos` (
+  `id_cedis_gasto` int(11) NOT NULL,
+  `id_se_cobra_a` int(11) DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_cedis_gasto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci's

@@ -125,8 +125,7 @@ include "footer.php" ;
         id=datos[1];
         ultimo_id=id;
         datos=datos[0]+datos[2];
-        console.log("---->"+id);
-        CargarGastos(id);
+        
         get_mails(id*1,"Se ha solicitado un cheque para: {nombre} por un monto de: {monto}");
 
         $("#result_user").html(datos);
@@ -134,7 +133,8 @@ include "footer.php" ;
         var substring = "Error";
         if(datos.indexOf(substring) == -1)
         {
-            document.getElementById("p_cheque").reset();
+            CargarGastos(id);
+            
         }
         
         load(1);
@@ -147,7 +147,6 @@ function load(page){
             var q= $("#q").val();
             var daterange= $("#date").val();
             $("#loader").fadeIn('slow');
-            console.log(daterange);
             $.ajax({
                 url:'./ajax/cheques.php?action=ajax&page='+page+'&daterange='+daterange+'&q='+q,
                  beforeSend: function(objeto){
@@ -165,7 +164,6 @@ function exportar()
 {
     document.location.target = "_blank";
     var url="excel/exportar_cheques.php";
-    console.log(url);
     document.location.href=url;     
 } 
 
@@ -185,7 +183,7 @@ function imprimircheque()
     if (confirm("Realmente deseas rechazar el cheque?")){  
     $.ajax({
     type: "GET",
-    url: "./action/rechazar_cheque.php",
+    url: "action/rechazar_cheque.php",
     data: "id="+id,"q":q,
      beforeSend: function(objeto){
         $("#resultados").html("Mensaje: Cargando...");
@@ -223,7 +221,6 @@ function cancelar_cheque(id,este)
     {
         document.getElementById('a'+este).disabled= false;
         document.getElementById('c'+este).disabled= false;
-        console.log('no_cheque'+este);
         var no_cheque=document.getElementById('no_cheque'+este).value;
         if(no_cheque.length!=0)
         {
@@ -231,16 +228,17 @@ function cancelar_cheque(id,este)
             if (confirm("Realmente deseas aceptar el cheque")){  
             $.ajax({
             type: "GET",
-            url: "./action/aceptar_cheque.php",
-            data: "id="+id+"&no_cheque="+no_cheque,
+            url: "action/aceptar_cheque.php",
+            data: "id="+id+"&nocheque="+no_cheque,
              beforeSend: function(objeto){
                 $("#resultados").html("Mensaje: Cargando...");
 
                 
               },
             success: function(datos){
+                console.log(datos);
             $("#resultados").html(datos);
-             get_mails((id*1),"Se a aprovado el  gasto para : {nombre} por un monto de: {monto} con numero de cheque: "+no_cheque);
+            get_mails((id*1),"Se a aprovado el  gasto para : {nombre} por un monto de: {monto} con numero de cheque: "+no_cheque);
             load(1);
             }
                 });
@@ -253,21 +251,17 @@ function cancelar_cheque(id,este)
 
 function get_mails(id,mensaje)
 {
-    console.log("2---->"+id);
     $.post("ajax/mails.php",{id:id} ,function (mails){
     //alert("Se notificará a: "+ mails);
    
     //var nombre=datos.1.0
     // [["raul.martinez@promo-tecnicas.com"],["dalia salazar "],["1072.9"]]
     
-        console.log(mails);
         //var mensaje="Se ha solicitado un cheque para: {nombre} por un monto de: {monto}";
         datos=JSON.parse(mails);
         mensaje=mensaje.replace("{nombre}",datos[1][0] );
         mensaje=mensaje.replace("{monto}",datos[2][0]);
         mails=datos[0].join(",");
-        console.log(mails);
-        console.log(mensaje);
     
         send_mails(mails,mensaje);
       
@@ -286,7 +280,6 @@ function send_mails(mails,mensaje)
 
 
 function GenerarSantanderFolio(){
-    console.log($('#referencia').is(":checked"));
     if (!$('#referencia').is(":checked"))
     {
         var folio=$('#folio').val();
@@ -319,10 +312,8 @@ function CargarGastosCedis(este){
     }else{
         $('#cedis_gastos_list').prop('disabled', false);
         $.post("ajax/cedis_gastos_list.php",{id_se_cobra_a:id_se_cobra_a},function(result){
-        console.log(result);
         var obj=JSON.parse(result),html='<option value="0">CEDIS Gastos</option>';
         for(var i in obj){
-            console.log(obj[i]);
             html+='<option value="'+obj[i].id_se_cobra_a+'">'+obj[i].name+'</option>';
         }
         $('#cedis_gastos_list').html(html);
@@ -333,40 +324,106 @@ function CargarGastosCedis(este){
 
 
 var NumGastos=0;
-function InicializaGastos(){
-    NumGastos=0;
-    var html='<br><div><button type="button" class="btn btn-primary" onclick="CrearGasto();"><i class="fa fa-plus-circle"></i> Agregar Gasto</button>';
-    html+='</div>';
+function InicializaGastos(este){
+    if($(este).val()!=""){
+        NumGastos=0;
+        var html='<br><div><button type="button" class="btn btn-primary" onclick="CrearGasto();"><i class="fa fa-plus-circle"></i> Agregar Gasto</button>';
+        html+='</div>';
 
-    $('#contenedor_gastos').html(html);
-    CrearGasto();
+        $('#contenedor_gastos').html(html);
+        CrearGasto();
+    }else{
+        $('#contenedor_gastos').html('');
+    }
+    
 }
-
+//Agrega un formulario para agregar gastos
 function CrearGasto(){
     var html='<div style=" border-bottom:solid 1px #ABB1BA;" data-id="'+NumGastos+'"><br>';
     html+='<label class="pull-right" style=" display:inline-block; " onclick="QuitarGasto(this);">X</label>';
     html+='<br><label style="width:200px;">Fecha de Consumo</label><input id="FC'+NumGastos+'" class="form-control" style=" display:inline-block; width:180px;" type="date" name=""><br>';
     html+='<br><label style="width:200px;">Fecha de Factura</label><input id="FF'+NumGastos+'" class="form-control" style=" display:inline-block; width:180px;" type="date" name=""><br>';
-    html+='<br><label style="width:200px;">Descripción</label><input id="D'+NumGastos+'" class="form-control" style=" display:inline-block; width:20%;" type="text" name=""><br>';
-    html+='<br><label style="width:200px;">Importe antes de IVA</label><input id="IAI'+NumGastos+'" class="form-control" style=" display:inline-block; width:20%;" type="text" name=""><br>';
-    html+='<br><label style="width:200px;">Deducible</label><input id="D'+NumGastos+'" style="width:20%;" type="checkbox" name=""><br>';
-    html+='<br><label style="width:200px;">IVA</label><input id="I'+NumGastos+'" class="form-control" style=" display:inline-block; width:20%;" type="text" name="">';
+    html+='<br><label style="width:200px;">Descripción</label><input id="Des'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Importe antes de IVA</label><input id="IAI'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Deducible</label><input id="Ded'+NumGastos+'" type="checkbox" name=""><br>';
+    html+='<br><label style="width:200px;">Categoria</label><select id="Cat'+NumGastos+'" class="form-control" style=" display:inline-block; width:40%;">'+CategoriaIncomeopc+'</select><br>';
+    html+='<br><label style="width:200px;">IVA</label><input id="I'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Comprobante</label><input id="File'+NumGastos+'" data-id="'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="file" name="" onchange="FiletoBase64(this);">';
+
+    html+='<input id="Com'+NumGastos+'" class="form-control" style=" visibility:hidden; width:60%;" type="text" name="">';
     html+='</div>';
     $('#contenedor_gastos').append(html);
     NumGastos++;
 }
-
+//Quita un formulario para agregar gastos
 function QuitarGasto(este){
     $(este).parent().remove();
     
 }
 
-function CargarGastos(){
+//Guarda los gastos en su tabla
+function CargarGastos(id_cheque){
+    var data = new Array();
     $('#contenedor_gastos').children().each(function(){
         if($(this).data('id')!=undefined){
-            console.log($(this).data('id'));
+            var json=JSON.parse('{}');
+            json.date=$('#FC'+$(this).data('id')).val();
+            json.date_fac=$('#FF'+$(this).data('id')).val();
+            json.description=$('#Des'+$(this).data('id')).val();
+            json.amount=$('#IAI'+$(this).data('id')).val();
+            json.deducible=$('#Ded'+$(this).data('id')).is(":checked");
+            json.category=$('#Cat'+$(this).data('id')).val();
+            json.monto_iva=$('#I'+$(this).data('id')).val();
+            json.comprobante=$('#Com'+$(this).data('id')).val();
+
+            data.push(json);           
         }
+       
         
     });
+
+    var datas = JSON.stringify(data);
+    $.post("action/add_gasto2.php",{id_cheque:id_cheque,data:datas},function(result){
+        console.log("Resultado: "+result);
+        if(result=="1"){
+            document.getElementById("p_cheque").reset();
+            $('#contenedor_gastos').html('');
+        }else{
+            alert(result);
+        }
+
+        //document.getElementById("p_cheque").reset();
+    });
+}
+
+////Carga el select de los pagos
+var CategoriaIncomeopc="";
+function GetCategoriaIncome(){
+    $.post("ajax/GetCategoriaIncome.php",{},function(result){
+        CategoriaIncomeopc=result;
+
+    });
+}
+GetCategoriaIncome();
+
+function FiletoBase64(este) {
+  var f = este.files[0]; // FileList object
+  if(f!=undefined){
+    var reader = new FileReader();
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          var binaryData = e.target.result;
+          //Converting Binary Data to base 64
+          var base64String = window.btoa(binaryData);
+          $('#Com'+$(este).data('id')).val(f.name+","+base64String);
+        };
+      })(f);
+      // Read in the image file as a data URL.
+      reader.readAsBinaryString(f);
+  }else{
+    $('#Com'+$(este).data('id')).val('');
+  }
+  
 }
 </script>

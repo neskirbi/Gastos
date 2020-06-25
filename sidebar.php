@@ -184,7 +184,7 @@
         </div>
     </div><!-- /top navigation -->    
     <?php
-    include"ventana.php";
+    //include"ventana.php";
 
     ?>
 
@@ -193,7 +193,7 @@
         function noti()
         {
             $.post("ajax/avisos.php",{},function(result){
-                console.log(result);
+                //console.log(result);
                 $('#sal_noti').html(result);
             });
         } 
