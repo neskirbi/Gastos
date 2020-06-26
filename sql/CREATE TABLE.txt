@@ -39,3 +39,10 @@
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_cedis_gasto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci's
+
+'CREATE TABLE `clasificacion` (
+  `id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `descripcion` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8'

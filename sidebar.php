@@ -60,12 +60,15 @@
                         <a href="cheque.php"><img src="images/payroll.png" class="fa"></img>Autorizar Cheque</a>
                     </li>
 
-                    <li class="<?php if(isset($active4)){echo $active4;}?>">
-                        <a href="cheques_aceptados.php"><img src="images/payroll.png" class="fa"></img>Cheques Aceptados</a>
+                    <li class="<?php if(isset($active5)){echo $active5;}?>">
+                        <a href="cheques_aceptados.php"><img src="images/payroll.png" class="fa"></img>Gastos Aceptados</a>
                     </li>
 
-                    <li class="<?php if(isset($active4)){echo $active4;}?>">
-                        <a href="cheques_rechazados.php"><img src="images/payroll.png" class="fa"></img>Cheques Rechazados</a>
+                    <li class="<?php if(isset($active6)){echo $active6;}?>">
+                        <a href="cheques_rechazados.php"><img src="images/payroll.png" class="fa"></img>Gastos Rechazados</a>
+                    </li>
+                    <li class="<?php if(isset($active7)){echo $active7;}?>">
+                        <a href="cheques_servicios.php"><img src="images/payroll.png" class="fa"></img>Pago de Servicios</a>
                     </li>
                     <?php
                     }

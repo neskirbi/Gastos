@@ -31,7 +31,7 @@ ini_set('display_errors', '1');
 
     if( $_SESSION['user_tipo']=="1" )
     {
-      $filtro=" (che.status='1') or che.fecha='$daterange'  ";
+      $filtro=" che.status='1' or (che.fecha='$daterange' and che.status='1')  ";
 
     }else if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="5" || $_SESSION['user_tipo']=="4" )
     {

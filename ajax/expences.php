@@ -355,10 +355,10 @@ if($user!="0")
                             $fechaPago=$r['fecha_pago'];
 							
 							
-							$tipop=$r['tipopago'];
+							$tipopago=$r['tipopago'];
 
-                            if($tipop!="0"){        
-                                $consulta_ctp="SELECT name from t_pago where id='".$tipop."' ";
+                            if($tipopago!="0"){        
+                                $consulta_ctp="SELECT name from t_pago where id='".$tipopago."' ";
                                 $sql_data=mysqli_query($con ,$consulta_ctp) ;
                                 $tpag=mysqli_fetch_array($sql_data);
                                 $tipopago=$tpag['name'];

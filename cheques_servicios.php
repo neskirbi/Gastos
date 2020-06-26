@@ -5,9 +5,9 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
     echo("<script>
             this.location='dashboard.php';</script>");
 }
-    $title ="Sastos Aceptados | ";
+    $title ="Solicitar cheque | ";
     include "head.php";
-	$active5="active";
+	$active7="active";
     include "sidebar.php"; 
 ?>
     <div class="right_col" role="main"> <!-- page content -->
@@ -20,7 +20,7 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                     ?>
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Gastos Aceptados</h2>
+                            <h2>Pago de Servicios</h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li>
                                 </li>
@@ -37,7 +37,8 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                                 <div class="col-md-3 pull-left">
                                         <input type="date" class="form-control" id="date" name="date" value=""  onchange="load(1);">
                                     </div>
-                                    <div class=" pull-left">
+
+                                <div class=" pull-left">
                                     <button type="button" class="btn btn-default"  onclick="LimpiaFecha();">x</button>
                                 </div>
                                
@@ -149,9 +150,10 @@ include "footer.php" ;
 function load(page){
             var q= $("#q").val();
             var daterange= $("#date").val();
+            console.log(daterange);
             $("#loader").fadeIn('slow');
             $.ajax({
-                url:'./ajax/cheques_aceptados.php?action=ajax&page='+page+'&daterange='+daterange+'&q='+q,
+                url:'./ajax/cheques_servicios.php?action=ajax&page='+page+'&daterange='+daterange+'&q='+q,
                  beforeSend: function(objeto){
                  $('#loader').html('<img src="./images/ajax-loader.gif"> Cargando...');
               },

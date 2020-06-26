@@ -5,9 +5,9 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
     echo("<script>
             this.location='dashboard.php';</script>");
 }
-    $title ="Solicitar cheque | ";
+    $title ="Gastos Rechazados | ";
     include "head.php";
-	$active4="active";
+	$active6="active";
     include "sidebar.php"; 
 ?>
     <div class="right_col" role="main"> <!-- page content -->
@@ -20,7 +20,7 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                     ?>
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Autorización de Pagos Solicitados</h2>
+                            <h2>Gastos Rechazados</h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li>
                                 </li>
@@ -35,8 +35,11 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                         <form class="form-horizontal" role="form" id="datos_cotizacion">
                             <div class="form-group row">
                                 <div class="col-md-3 pull-left">
-                                        <input type="date" class="form-control" id="date" name="date" value="<?php echo date('Y-m-d');?>"  onchange="load(1);">
+                                        <input type="date" class="form-control" id="date" name="date" value=""  onchange="load(1);">
                                     </div>
+                                     <div class=" pull-left">
+                                    <button type="button" class="btn btn-default"  onclick="LimpiaFecha();">x</button>
+                                </div>
                                
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-default" onclick='load(1);'>
@@ -52,8 +55,8 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                                     if($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0")
                                     {
                                         ?>
-                                        <button type="button" class="btn btn-default" onclick='exportar();'>
-                                        <span class="glyphicon glyphicon-export" ></span> Exportar</button>
+                                       <!--<button type="button" class="btn btn-default" onclick='exportar();'>
+                                        <span class="glyphicon glyphicon-export" ></span> Exportar</button>-->
                                         
                                         
                                         <?php
@@ -425,5 +428,10 @@ function FiletoBase64(este) {
     $('#Com'+$(este).data('id')).val('');
   }
   
+}
+
+function LimpiaFecha(){
+    $('#date').val('');
+    $('#date').change();
 }
 </script>

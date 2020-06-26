@@ -31,9 +31,9 @@ ini_set('display_errors', '1');
 
     if( $_SESSION['user_tipo']=="1" )
     {
-        $filtro=" che.status='0' and che.fecha='$daterange' and cla.descripcion!='Servicio'  ";
+        $filtro=" che.fecha='$daterange' and cla.descripcion='Servicio'  ";
         if($daterange==''){
-            $filtro=" che.status='0' and cla.descripcion!='Servicio'  ";
+            $filtro=" cla.descripcion='Servicio'  ";
         }
 
     }else if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="5" || $_SESSION['user_tipo']=="4" )
@@ -72,7 +72,7 @@ ini_set('display_errors', '1');
         <table class="table table-striped jambo_table bulk_action">
             <thead>
                 <tr class="headings" >
-                     <th class="column-title">Periodo</th>
+                    <th class="column-title">Periodo</th>
                     <th class="column-title">Semana</th>
                     <th class="column-title">Gasto </th>
                     <th class="column-title">Concepto</th>
@@ -127,8 +127,7 @@ ini_set('display_errors', '1');
                         }
 
                         
-                        $t_gasto=$r['t_cheque'];
-                        
+                        $t_gasto=$r['t_cheque'];                        
 
                         $periodo=$r['periodo'];
                         $semana=$r['semana'];
@@ -164,8 +163,7 @@ ini_set('display_errors', '1');
                     <td><div style="width:80px"><?php echo $tipopago; ?></div></td>
                     <td><div style="width:110px"><?php echo $Cuenta; ?></div></td>
                     <?php
-                    
-
+                 
                         
                     
                         if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']!="2")
@@ -183,7 +181,8 @@ ini_set('display_errors', '1');
                         }
                     
                     ?>
-                       
+                    
+                    
 
                     <?php
                     echo'<td>'.$FolioSantander.'</td>';
