@@ -52,16 +52,20 @@ ini_set('display_errors', '1');
         
 
         $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
-        tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago 
-        FROM gas.cheques as che 
-        left join gas.user as usu on usu.id=che.beneficiario 
-        left join gas.t_cheque as tche on tche.id=che.t_cheque 
-        left join gas.programas as pro on pro.id=che.programa 
-        left join gas.t_pago as tpag on tpag.id=che.tipopago  
+        tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
+        che.clasificacion,cla.descripcion,che.FolioSantander  
+        FROM cheques as che 
+        left join user as usu on usu.id=che.beneficiario 
+        left join t_cheque as tche on tche.id=che.t_cheque 
+        left join programas as pro on pro.id=che.programa 
+        left join t_pago as tpag on tpag.id=che.tipopago
+        left join clasificacion as cla on cla.id=che.clasificacion 
         where $filtro ";
 
 
-        $query = mysqli_query($con, $sql); 
+        if(!$query = mysqli_query($con, $sql)){
+            echo mysqli_errno($con);
+        } 
             
         ?>
         <table class="table table-striped jambo_table bulk_action">
@@ -79,6 +83,7 @@ ini_set('display_errors', '1');
                     <th class="column-title">Tipo dePago</th>
                     <th class="column-title">Cuenta deposito</th>
                     <th class="column-title">No. Cheque </th>
+                    <th class="column-title" style="width:310px;">Folio Envio </th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;✓&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;×&nbsp;</th>
@@ -91,6 +96,7 @@ ini_set('display_errors', '1');
                     while ($r=mysqli_fetch_array($query)) {
                         $id=$r['id'];
                         $no_cheque=$r['no_cheque'];
+                        $FolioSantander=$r['FolioSantander'];
                         $status=$r['status'];
                        
                         switch($status)
@@ -176,8 +182,10 @@ ini_set('display_errors', '1');
                         }
                     
                     ?>
-                    <td>
+                   
                     <?php
+                    echo'<td>'.$FolioSantander.'</td>';
+                    echo'<td>';
                     if($_SESSION['user_tipo']=="1"  || $_SESSION['user_tipo']=="0")
                     {
                         if($r['status']=="1"){
