@@ -232,6 +232,21 @@
                                         </div>                          
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <br>
+                                     <div class="col-md-5 pull-left">
+                                        <select class="form-control" id="cuentasalida" name="cuentasalida" required="required">
+                                            <option selected="" value="">--Cuenta de salida --</option>
+                                            <?php
+                                            $categories = mysqli_query($con,"SELECT * from cuentasalida");
+                                            while ($cat=mysqli_fetch_array($categories)) { ?>
+                                            <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                      </div>
+                                </td>
+                            </tr>
 						
 						
 						

@@ -18,6 +18,7 @@
 		$deducible=boolval($params[$key]['deducible']);
 	    $iva=floatval($params[$key]['monto_iva']);
 		$comprobantename="";
+		$facturaname="";
 
 	    if($params[$key]['factura']!=""){
 	    	$facturat=explode(",",$params[$key]['factura']);
