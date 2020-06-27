@@ -22,9 +22,10 @@
   `se_cobra_a_list` int(11) DEFAULT NULL,
   `cedis_gastos_list` int(11) DEFAULT NULL,
   `FolioSantander` varchar(500) DEFAULT NULL,
-  `folio` varchar(150) DEFAULT NULL,
+  `cvalidacion` varchar(150) DEFAULT NULL,
+  `referencia` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1793 DEFAULT CHARSET=utf8'
+) ENGINE=InnoDB AUTO_INCREMENT=1825 DEFAULT CHARSET=utf8'
 
 
 'CREATE TABLE `se_cobra_a` (

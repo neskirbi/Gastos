@@ -102,7 +102,7 @@
                                 <td colspan="2">
                                     <div class="col-md-4 pull-left" style="width:100%">
                                         <br>
-                                         <select required id="se_cobra_a_list" name="se_cobra_a_list" class="form-control" style="width: 40%; display: inline-block;" onchange="CargarGastosCedis(this);"> 
+                                         <select required id="se_cobra_a_list" name="se_cobra_a_list" class="form-control" style="width: 40%; display: inline-block;" onchange="CargarGastosCedis(this); GenerarSantanderFolio();"> 
                                          <option selected="" value="">Se Cobra A</option>
                                             <?php
                                             $consulta="SELECT * from se_cobra_a order by id_se_cobra_a asc";
@@ -164,7 +164,7 @@
                                      <br>
                                 <div class="col-md-10 pull-left" style="width:47%" >
                                     
-                                        <select class="form-control" id="idben" name="idben" required onchange="benefi(this);" style="<?php echo $hidden; ?>" >
+                                        <select class="form-control" id="idben" name="idben" required onchange="benefi(this);GenerarSantanderFolio();" style="<?php echo $hidden; ?>" >
                                             <option selected="" value="">-- Beneficiario --</option>
                                             <?php
 
@@ -249,7 +249,7 @@
                                 <td colspan="2">
                                 <br>
                                     <div class="col-md-10 pull-left" style="width:95%">
-                                           <input type="text" id="folio" name="folio" class="form-control" placeholder="Folio" required="required" onkeyup="GenerarSantanderFolio();" >
+                                           <input type="text" id="cvalidacion" name="cvalidacion" class="form-control" placeholder="C&oacute;digo de validaci&oacute;n" onkeyup="GenerarSantanderFolio();" >
                                     </div>
                                  </td>
                             </tr>
@@ -258,7 +258,7 @@
                                 <td colspan="2">
                                 <br>
                                     <div class="col-md-10 pull-left" style="width:65%">
-                                           <input type="text" name="FolioSantander" id="FolioSantander" class="form-control" placeholder="FolioSantander" >
+                                           <input type="text" name="FolioSantander" id="FolioSantander" class="form-control" placeholder="FolioSantander">
                                     </div>
 
                                     <div class="col-md-10 pull-left" style="width:30%">
@@ -287,7 +287,7 @@
 
 									  
                                     <div class="col-md-5 pull-left">
-                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos(this);">
+                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos(this); HacerRequeridoFolio(this);">
                                             <option value="">-- Seleccione tipo de gasto --</option>
                                             <?php
                                             $categories = mysqli_query($con,$consulta_tcheque);

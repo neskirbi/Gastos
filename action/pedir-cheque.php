@@ -11,12 +11,17 @@ $idben=$_POST['idben'];
 $bennombre=$_POST['nombreben'];
 $clasifica=$_POST['clasificacion'];
 $tipopago=$_POST['tipopago'];
+if(isset($_POST['referencia'])){
+	$referencia=boolval($_POST['referencia']);
+}else{
+	$referencia=0;
+}
 
 $concepto=mysqli_real_escape_string($con,( $_POST['concepto']));
 $se_cobra_a_list=mysqli_real_escape_string($con,$_POST['se_cobra_a_list']);
 $cedis_gastos_list=mysqli_real_escape_string($con,$_POST['cedis_gastos_list']);
 $FolioSantander=mysqli_real_escape_string($con,$_POST['FolioSantander']);
-$folio=mysqli_real_escape_string($con,$_POST['folio']);
+$cvalidacion=mysqli_real_escape_string($con,$_POST['cvalidacion']);
 $semana=mysqli_real_escape_string($con,( $_POST['semana']));
 $periodo=mysqli_real_escape_string($con,( $_POST['periodo']));
 $Cuenta=mysqli_real_escape_string($con,( $_POST['Cuenta']));
@@ -33,7 +38,7 @@ if($category=="3")
 	$status=0;
 }
 
-$consulta="INSERT into cheques (programa,monto,fecha,fecha_confirm,beneficiario,bennombre,concepto,t_cheque,status,no_cheque,solicitante,clasificacion,a_iva, semana, periodo, tipopago, cuenta,se_cobra_a_list,cedis_gastos_list,FolioSantander,folio) values($programa,$monto,'$fecha','$fecha',$idben,'$bennombre','$concepto',$category,$status, '0', '$user_id', '$clasifica',0,'$semana', '$periodo', '$tipopago', '$Cuenta','$se_cobra_a_list','$cedis_gastos_list','$FolioSantander','$folio')";
+$consulta="INSERT into cheques (programa,monto,fecha,fecha_confirm,beneficiario,bennombre,concepto,t_cheque,status,no_cheque,solicitante,clasificacion,a_iva, semana, periodo, tipopago, cuenta,se_cobra_a_list,cedis_gastos_list,FolioSantander,cvalidacion,referencia) values('$programa','$monto','$fecha','$fecha','$idben','$bennombre','$concepto','$category','$status', '0', '$user_id', '$clasifica','0','$semana', '$periodo', '$tipopago', '$Cuenta','$se_cobra_a_list','$cedis_gastos_list','$FolioSantander','$cvalidacion','$referencia')";
 if($sql=mysqli_query($con,$consulta))
 {
 	$idcheque= mysqli_insert_id($con);

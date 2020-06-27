@@ -17,22 +17,40 @@
 		$user_id=$_SESSION['user_id'];
 		$deducible=boolval($params[$key]['deducible']);
 	    $iva=floatval($params[$key]['monto_iva']);
-	    $comprobantet=explode(",",$params[$key]['comprobante']);
-	    $comprobantename=$comprobantet[0];
-	    $comprobante64=$comprobantet[1];
+		$comprobantename="";
 
-	    $values[]="('$description','$amount','$user_id','$category','$date_added','$id_cheque','$deducible','$iva','$date_fac','$comprobantename')";
+	    if($params[$key]['factura']!=""){
+	    	$facturat=explode(",",$params[$key]['factura']);
+		    $facturaname=$facturat[0];
+		    $factura64=$facturat[1];
 
-	    $content = base64_decode($comprobante64);
-	    $file = fopen("../Comprobantes/".$comprobantename, "wb");
-	    fwrite($file, $content);
-		fclose($file);
+
+		    $content = base64_decode($factura64);
+		    $file = fopen("../Comprobantes/".$facturaname, "wb");
+		    fwrite($file, $content);
+			fclose($file);
+	    }
+
+	    if($params[$key]['comprobante']!=""){
+	    	$comprobantet=explode(",",$params[$key]['comprobante']);
+		    $comprobantename=$comprobantet[0];
+		    $comprobante64=$comprobantet[1];
+
+
+		    $content = base64_decode($comprobante64);
+		    $file = fopen("../Comprobantes/".$comprobantename, "wb");
+		    fwrite($file, $content);
+			fclose($file);
+	    }
+	   
+	    
+	    $values[]="('$description','$amount','$user_id','$category','$date_added','$id_cheque','$deducible','$iva','$date_fac','$comprobantename','$facturaname')";
 	}
 
 	
 
 	
-	$sql="INSERT INTO desglose (description, amount, user_id, category_id, created_at,id_cheque,deducible,iva,date_fac,comprobante) VALUES".implode(",",$values);
+	$sql="INSERT INTO desglose (description, amount, user_id, category_id, created_at,id_cheque,deducible,iva,date_fac,comprobante,factura) VALUES".implode(",",$values);
 	$query_new_insert = mysqli_query($con,$sql);
 	if ($query_new_insert){
 		echo"1";

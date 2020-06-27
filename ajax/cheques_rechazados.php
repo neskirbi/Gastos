@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
     include "../config/config.php";//Contiene funcion que conecta a la base de datos
     session_start();
     function verificar($id)
