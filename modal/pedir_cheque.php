@@ -19,7 +19,7 @@
 		$consulta_pa="SELECT * from t_pago";
         $consulta_tcheque="SELECT * from t_cheque where id!='3'";
     }
-        $consulta_ben="SELECT * from proveedores ";
+        $consulta_ben="SELECT * from proveedores order by titular asc ";
 
     $where="";  
     
