@@ -282,13 +282,12 @@ function send_mails(mails,mensaje)
 function GenerarSantanderFolio(){
     if (!$('#referencia').is(":checked"))
     {
-        var cvalidacion=$('#cvalidacion').val();
-        var secobra=$('#se_cobra_a_list').val();
+        
         var benefi=$('#idben').val();
         //var secobra=$('#se_cobra_a_list option:selected').text();
         //var benefi=$('#idben option:selected').text();
 
-         $('#FolioSantander').val(cvalidacion+"-"+secobra+"-"+benefi);
+         $('#FolioSantander').val(benefi);
     }else{
        
         $('#FolioSantander').val('');

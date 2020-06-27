@@ -54,7 +54,7 @@
 
         $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
         tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
-        che.clasificacion,cla.descripcion,che.FolioSantander  
+        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia  
         FROM cheques as che 
         left join user as usu on usu.id=che.beneficiario 
         left join t_cheque as tche on tche.id=che.t_cheque 
@@ -126,7 +126,7 @@
 
                         
                         $t_gasto=$r['t_cheque'];
-                        
+                        $referencia=$r['referencia'];   
 
                         $periodo=$r['periodo'];
                         $semana=$r['semana'];
@@ -184,7 +184,11 @@
                        
 
                     <?php
-                    echo'<td>'.$FolioSantander.'</td>';
+                    if($referencia!="1"){
+                        echo'<td data="'.$id.'">'.$id."-".$FolioSantander.'</td>';
+                    }else{
+                        echo'<td>'.$FolioSantander.'</td>';
+                    }
                     echo'<td>';
                     if($_SESSION['user_tipo']=="1"  || $_SESSION['user_tipo']=="0")
                     {
