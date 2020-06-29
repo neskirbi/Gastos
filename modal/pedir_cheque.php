@@ -170,7 +170,7 @@
 
                                             $user = mysqli_query($con,$consulta_ben);
                                             while ($data_user=mysqli_fetch_array($user)) { ?>
-                                            <option value="<?php echo $data_user['cuenta']; ?>"><?php echo $data_user['nombre']; ?></option>
+                                            <option data-cuenta="<?php echo $data_user['cuenta']; ?>" value="<?php echo $data_user['id']; ?>"><?php echo $data_user['nombre']; ?></option>
                                             <?php } ?>
                                             <!--<option value="0">Otro</option>-->
                                         </select>   
@@ -302,7 +302,7 @@
 
 									  
                                     <div class="col-md-5 pull-left">
-                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos(this); HacerRequeridoFolio(this);">
+                                        <select class="form-control" id="category" name="category" required="required" style="<?php echo $hidden; ?>"  onchange="InicializaGastos(this); HacerRequeridoFolio(this); GenerarSantanderFolio();">
                                             <option value="">-- Seleccione tipo de gasto --</option>
                                             <?php
                                             $categories = mysqli_query($con,$consulta_tcheque);
@@ -351,6 +351,7 @@ function benefi(este)
     var select_ben=document.getElementById("idben");
     if(este.value=="0")
     {
+        $('#cuenta').val('');
         div.style="display:yes;";
         input.required=true;
         input.value="";
@@ -358,7 +359,8 @@ function benefi(este)
     }
     else
     {
-        $('#cuenta').val($(este).val());
+
+        $('#cuenta').val($('#idben option:selected').data('cuenta'));
         div.style="display:none;";
         input.required=false;
         input.value="0";
@@ -366,21 +368,198 @@ function benefi(este)
     }
 }
 
-/*function CargarSecobraA(){
-    $.post("ajax/se_cobra_a_list.php",{},function(result){
-        //console.log(result);
-        var obj=JSON.parse(result),html='<option value="0">Se Cobra A</option>';
+function GenerarSantanderFolio(){
+    if($('#category').val()!="1"){
+        if (!$('#referencia').is(":checked"))
+        {
+            
+            //var benefi=$('#idben').val();
+            var benefi=$('#idben option:selected').text();
+
+             $('#FolioSantander').val(benefi);
+        }else{
+           
+            $('#FolioSantander').val('');
+            
+        }
+    }else{
+        $('#FolioSantander').val('');
+    }
+   
+
+    
+}
+
+function EditarFolioSantander(este){
+    var id=$(este).data("id");
+    var FolioSantander=$('#FS'+id).val();
+
+    $.post("action/EditarFolioSantander.php",{id:id,FolioSantander:FolioSantander} ,function (result){
+        if(result.includes("1")){
+            $('#FS'+id).css('border','solid 1px #40C2A6');
+
+        }else{
+            $('#FS'+id).css('border','solid 1px #E96153');
+
+        }
+      
+                
+     });  
+}
+
+
+function CargarGastosCedis(este){
+
+    var id_se_cobra_a=$(este).val();
+    if(id_se_cobra_a=="0"){
+        $('#cedis_gastos_list').prop('disabled', true);
+        $('#cedis_gastos_list').html('<option value="0">CEDIS Gastos</option>');
+    }else{
+        $('#cedis_gastos_list').prop('disabled', false);
+        $.post("ajax/cedis_gastos_list.php",{id_se_cobra_a:id_se_cobra_a},function(result){
+        var obj=JSON.parse(result),html='<option value="0">CEDIS Gastos</option>';
         for(var i in obj){
-            //console.log(obj[i]);
             html+='<option value="'+obj[i].id_se_cobra_a+'">'+obj[i].name+'</option>';
         }
-        $('#se_cobra_a_list').html(html);
+        $('#cedis_gastos_list').html(html);
+    });
+    }
+    
+}
+
+
+var NumGastos=0;
+function InicializaGastos(este){
+    if($(este).val()!="" && $(este).val()!="2" && $(este).val()!="5"){
+        NumGastos=0;
+        var html='<br><div><button type="button" class="btn btn-primary" onclick="CrearGasto();"><i class="fa fa-plus-circle"></i> Agregar Gasto</button>';
+        html+='</div>';
+
+        $('#contenedor_gastos').html(html);
+        CrearGasto();
+    }else if($(este).val()!="" || $(este).val()=="2" || $(este).val()!="5"){
+        $('#contenedor_gastos').html('');
+    }
+    
+}
+//Agrega un formulario para agregar gastos
+function CrearGasto(){
+    var html='<div style=" border-bottom:solid 1px #ABB1BA;" data-id="'+NumGastos+'"><br>';
+    html+='<label class="pull-right" style=" display:inline-block; " onclick="QuitarGasto(this);">X</label>';
+    html+='<br><label style="width:200px;">Fecha de Consumo</label><input id="FC'+NumGastos+'" class="form-control" style=" display:inline-block; width:180px;" type="date" name=""><br>';
+    html+='<br><label style="width:200px;">Fecha de Factura</label><input id="FF'+NumGastos+'" class="form-control" style=" display:inline-block; width:180px;" type="date" name=""><br>';
+    html+='<br><label style="width:200px;">Descripción</label><input id="Des'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Importe antes de IVA</label><input id="IAI'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Deducible</label><input id="Ded'+NumGastos+'" type="checkbox" name="" onchange="RequiredFactura(this);" data-id="'+NumGastos+'"><br>';
+    html+='<br><label style="width:200px;">Categoria</label><select id="Cat'+NumGastos+'" class="form-control" style=" display:inline-block; width:40%;">'+CategoriaIncomeopc+'</select><br>';
+    html+='<br><label style="width:200px;">IVA</label><input id="I'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
+    html+='<br><label style="width:200px;">Factura</label><input id="File1'+NumGastos+'" data-id="'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="file" name="" onchange="FiletoBase64(this,1);" disabled="disabled">';
+
+    html+='<input id="Com1'+NumGastos+'" class="form-control" style=" visibility:hidden; width:60%;" type="text" name="">';
+
+    html+='<label style="width:200px;">Complemento Pago</label><input id="File2'+NumGastos+'" data-id="'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="file" name="" onchange="FiletoBase64(this,2);" disabled="disabled">';
+
+    html+='<input id="Com2'+NumGastos+'" class="form-control" style=" visibility:hidden; width:60%;" type="text" name="">';
+    html+='</div>';
+    $('#contenedor_gastos').append(html);
+    NumGastos++;
+}
+//Quita un formulario para agregar gastos
+function QuitarGasto(este){
+    $(este).parent().remove();
+    
+}
+
+function RequiredFactura(este){
+    if($(este).is(":checked")){
+        $('#File1'+$(este).data('id')).prop('disabled',false);
+        $('#File2'+$(este).data('id')).prop('disabled',false);
+    }else{
+        $('#File1'+$(este).data('id')).prop('disabled',true);
+        $('#File2'+$(este).data('id')).prop('disabled',true);
+    }
+    
+}
+
+//Guarda los gastos en su tabla
+function CargarGastos(id_cheque){
+    var data = new Array();
+    $('#contenedor_gastos').children().each(function(){
+        if($(this).data('id')!=undefined){
+            var json=JSON.parse('{}');
+            json.date=$('#FC'+$(this).data('id')).val();
+            json.date_fac=$('#FF'+$(this).data('id')).val();
+            json.description=$('#Des'+$(this).data('id')).val();
+            json.amount=$('#IAI'+$(this).data('id')).val();
+            json.deducible=$('#Ded'+$(this).data('id')).is(":checked");
+            json.category=$('#Cat'+$(this).data('id')).val();
+            json.monto_iva=$('#I'+$(this).data('id')).val();
+            json.factura=$('#Com1'+$(this).data('id')).val();
+            json.comprobante=$('#Com2'+$(this).data('id')).val();
+
+            data.push(json);           
+        }
+       
+        
+    });
+
+    if(data.length>0){
+        var datas = JSON.stringify(data);
+        $.post("action/add_gasto2.php",{id_cheque:id_cheque,data:datas},function(result){
+            console.log("Resultado: "+result);
+            if(result=="1"){
+                document.getElementById("p_cheque").reset();
+                $('#contenedor_gastos').html('');
+            }else{
+                alert(result);
+            }
+
+            //
+        });
+    }
+    document.getElementById("p_cheque").reset();
+    $('#contenedor_gastos').html('');
+    
+}
+
+////Carga el select de los pagos
+var CategoriaIncomeopc="";
+function GetCategoriaIncome(){
+    $.post("ajax/GetCategoriaIncome.php",{},function(result){
+        CategoriaIncomeopc=result;
+
     });
 }
-CargarSecobraA();*/
+GetCategoriaIncome();
 
+function FiletoBase64(este,numero) {
+  var f = este.files[0]; // FileList object
+  if(f!=undefined){
+    var reader = new FileReader();
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          var binaryData = e.target.result;
+          //Converting Binary Data to base 64
+          var base64String = window.btoa(binaryData);
+          $('#Com'+numero+$(este).data('id')).val(f.name+","+base64String);
+        };
+      })(f);
+      // Read in the image file as a data URL.
+      reader.readAsBinaryString(f);
+  }else{
+    $('#Com'+$(este).data('id')).val('');
+  }
+  
+}
+function HacerRequeridoFolio(este){
+    if($(este).val()=="1"){
+        $('#cvalidacion').prop('required',true);
+    }else{
+        $('#cvalidacion').prop('required',false);
+    }
 
-
+}
 
     
 </script>

@@ -54,23 +54,26 @@
 
         $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
         tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
-        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia  
+        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida  
         FROM cheques as che 
         left join user as usu on usu.id=che.beneficiario 
         left join t_cheque as tche on tche.id=che.t_cheque 
         left join programas as pro on pro.id=che.programa 
         left join t_pago as tpag on tpag.id=che.tipopago
-        left join clasificacion as cla on cla.id=che.clasificacion  
-        where $filtro ";
+        left join clasificacion as cla on cla.id=che.clasificacion 
+        left join cuentasalida as cs on cs.id=che.cuentasalida
+        where $filtro   order by che.FolioSantander desc";
 
 
-        $query = mysqli_query($con, $sql); 
+        if(!$query = mysqli_query($con, $sql)){
+            echo mysqli_errno($con);
+        } 
             
         ?>
-        <table class="table table-striped jambo_table bulk_action">
+        <table class="table table-striped jambo_table bulk_action" style="width :150%;">
             <thead>
                 <tr class="headings" >
-                     <th class="column-title">Periodo</th>
+                    <th class="column-title">Periodo</th>
                     <th class="column-title">Semana</th>
                     <th class="column-title">Gasto </th>
                     <th class="column-title">Concepto</th>
@@ -81,6 +84,7 @@
                     <th class="column-title">Entregado</th>
                     <th class="column-title">Tipo dePago</th>
                     <th class="column-title">Cuenta deposito</th>
+                    <th class="column-title">Cuenta de Salida</th>                    
                     <th class="column-title">No. Cheque </th>
                     <th class="column-title" style="width:310px;">Folio Envio </th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -126,13 +130,14 @@
 
                         
                         $t_gasto=$r['t_cheque'];
-                        $referencia=$r['referencia'];   
+                        $referencia=$r['referencia'];                        
 
                         $periodo=$r['periodo'];
                         $semana=$r['semana'];
                         $concepto=$r['concepto'];
                         //$programa=$r['programa'];
                         $Cuenta=$r['Cuenta'];
+                        $cuentasalida=$r['cuentasalida'];
                         //$tipop=$r['tipopago'];
                         $programa=$r['programa']; 
                         $tipopago=$r['tipopago'];
@@ -161,6 +166,7 @@
                     <td><div style="width:80px"><?php echo $fecha_entrega; ?></div></td>
                     <td><div style="width:80px"><?php echo $tipopago; ?></div></td>
                     <td><div style="width:110px"><?php echo $Cuenta; ?></div></td>
+                    <td><div style="width:11px"><?php echo $cuentasalida; ?></div></td>
                     <?php
                     
 
@@ -181,14 +187,15 @@
                         }
                     
                     ?>
-                       
-
+                   
                     <?php
-                    if($referencia!="1"){
-                        echo'<td data="'.$id.'">'.$id."-".$FolioSantander.'</td>';
+                    if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']=="1")
+                    {
+                        echo'<td style="width:310px;"><input id="FS'.$id.'" type="text" class="form-control" name="FolioSantander" value="'.$FolioSantander.'" onkeyup="EditarFolioSantander(this);" data-id="'.$id.'"></td>';
                     }else{
-                        echo'<td>'.$FolioSantander.'</td>';
+                        echo'<td style="width:310px;">'.$FolioSantander.'</td>';
                     }
+                    
                     echo'<td>';
                     if($_SESSION['user_tipo']=="1"  || $_SESSION['user_tipo']=="0")
                     {

@@ -24,8 +24,42 @@
   `FolioSantander` varchar(500) DEFAULT NULL,
   `cvalidacion` varchar(150) DEFAULT NULL,
   `referencia` int(11) DEFAULT NULL,
+  `cuentasalida` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1825 DEFAULT CHARSET=utf8'
+) ENGINE=InnoDB AUTO_INCREMENT=1851 DEFAULT CHARSET=utf8'
+
+'CREATE TABLE `desglose` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(1000) NOT NULL,
+  `amount` float NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `created_at` date NOT NULL,
+  `id_cheque` int(11) NOT NULL,
+  `comprobante` varchar(300) NOT NULL DEFAULT '''',
+  `deducible` tinyint(1) NOT NULL,
+  `iva` float NOT NULL,
+  `quien_sup` int(11) NOT NULL DEFAULT ''0'',
+  `com_sup` varchar(300) NOT NULL DEFAULT '''',
+  `ok_sup` tinyint(1) NOT NULL DEFAULT ''0'',
+  `quien_cli` int(11) NOT NULL DEFAULT ''0'',
+  `com_cli` varchar(300) NOT NULL DEFAULT '''',
+  `ok_cli` tinyint(1) NOT NULL DEFAULT ''0'',
+  `quien_val` int(11) NOT NULL DEFAULT ''0'',
+  `com_val` varchar(300) NOT NULL DEFAULT '''',
+  `o_impuestos` float NOT NULL DEFAULT ''0'',
+  `ret_iva` float NOT NULL DEFAULT ''0'',
+  `facturacion` int(11) NOT NULL DEFAULT ''0'',
+  `ok_val` tinyint(1) NOT NULL DEFAULT ''0'',
+  `si_aid` tinyint(4) DEFAULT ''0'',
+  `fecha_ok_sup` varchar(15) NOT NULL DEFAULT ''0'',
+  `fecha_ok_cli` varchar(15) NOT NULL DEFAULT ''0'',
+  `date_fac` varchar(11) DEFAULT ''0'',
+  `factura` varchar(300) DEFAULT '''',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1914 DEFAULT CHARSET=latin1'
 
 
 'CREATE TABLE `se_cobra_a` (
@@ -47,3 +81,10 @@
   `descripcion` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8'
+
+'CREATE TABLE `cuentasalida` (
+  `id` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `nocuenta` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci'

@@ -43,42 +43,61 @@ $consulta="INSERT into cheques (programa,monto,fecha,fecha_confirm,beneficiario,
 if($sql=mysqli_query($con,$consulta))
 {
 	$idcheque= mysqli_insert_id($con);
-	?>
-	<div class="alert alert-success" role="alert">
-		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		<strong>¡Bien hecho! Cheque solicitado ,<?php echo $idcheque; ?>, </strong>
-		
-	</div>
-	<?php
-	//si es un reembolso se carga el gasto en automatico
-	if($category=="3")
-	{
-		
-		$fecha_confirm=date('Y-m-d');
-		$consulta="INSERT into gastos (id_cheque,fecha,fecha_comp,status,t_gasto) values('$idcheque','$fecha_confirm','0000-00-00','1','0')";
-        if(mysqli_query($con,$consulta))
-            {
-              ?>
-            <div class="alert alert-success alert-dismissible" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <strong>Aviso!</strong> Reembolso solicitado.
-            </div>
-            <?php
-        }else{
-        	?>
+
+	if($referencia==0){
+		$update="UPDATE cheques set FolioSantander=CONCAT('".$idcheque."',FolioSantander)  where id='".$idcheque."'  ";
+		if($sql=mysqli_query($con,$update))
+		{
+			
+		}else{
+	    	?>
 			<div class="alert alert-error" role="alert">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<strong>¡Error!, Al cargar el gasto</strong>
+				<strong>¡Error! Al guardar FolioSanander. <?php echo mysqli_error($con); ?></strong>
 			</div>
 		<?php
-        }
+	    }
 	}
+
+	
+
+    ?>
+		<div class="alert alert-success" role="alert">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<strong>¡Bien hecho! Cheque solicitado ,<?php echo $idcheque; ?>, </strong>
+			
+		</div>
+		<?php
+		//si es un reembolso se carga el gasto en automatico
+		if($category=="3")
+		{
+			
+			$fecha_confirm=date('Y-m-d');
+			$consulta="INSERT into gastos (id_cheque,fecha,fecha_comp,status,t_gasto) values('$idcheque','$fecha_confirm','0000-00-00','1','0')";
+	        if(mysqli_query($con,$consulta))
+	            {
+	              ?>
+	            <div class="alert alert-success alert-dismissible" role="alert">
+	              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	              <strong>Aviso!</strong> Reembolso solicitado.
+	            </div>
+	            <?php
+	        }else{
+	        	?>
+				<div class="alert alert-error" role="alert">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>¡Error! Al cargar el gasto. <?php echo mysqli_error($con); ?></strong>
+				</div>
+			<?php
+	        }
+		}
+	
 
 }else{
 	?>
 	<div class="alert alert-error" role="alert">
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		<strong>¡Error!, Verifique los datos</strong>
+		<strong>¡Error! Verifique los datos. <?php echo mysqli_error($con); ?></strong>
 		
 	</div>
 	<?php
