@@ -51,7 +51,7 @@
 
         $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
         tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
-        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida  
+        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida,cs.id as csid  
         FROM cheques as che 
         left join user as usu on usu.id=che.beneficiario 
         left join t_cheque as tche on tche.id=che.t_cheque 
@@ -135,6 +135,7 @@
                         //$programa=$r['programa'];
                         $Cuenta=$r['Cuenta'];
                         $cuentasalida=$r['cuentasalida'];
+                        $csid=$r['csid'];
                         //$tipop=$r['tipopago'];
                         $programa=$r['programa']; 
                         $tipopago=$r['tipopago'];
@@ -163,7 +164,20 @@
                     <td><div style="width:80px"><?php echo $fecha_entrega; ?></div></td>
                     <td><div style="width:80px"><?php echo $tipopago; ?></div></td>
                     <td><div style="width:110px"><?php echo $Cuenta; ?></div></td>
-                    <td><div style="width:11px"><?php echo $cuentasalida; ?></div></td>
+                    <td>
+                        <select class="form-control" data-id="<?php echo $id; ?>" id="cuentasalida" name="cuentasalida" required="required" onchange="Editarcuentasalida(this);">
+                            <option value="<?php echo $csid;?>"><?php echo $cuentasalida;?></option>
+                            <optgroup>
+                            <?php
+                            $categories = mysqli_query($con,"SELECT * from cuentasalida");
+                            while ($cat=mysqli_fetch_array($categories)) { ?>
+                            <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
+                            <?php 
+                            } 
+                            ?>
+                        </optgroup>
+                        </select>
+                    </td>
                     <?php
                     
 

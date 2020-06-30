@@ -408,6 +408,23 @@ function EditarFolioSantander(este){
 }
 
 
+function Editarcuentasalida(este){
+    var id=$(este).data("id");
+    var cuentasalida=$(este).val();
+
+    $.post("action/Editarcuentasalida.php",{id:id,cuentasalida:cuentasalida} ,function (result){
+        if(result.includes("1")){
+            $(este).css('border','solid 1px #40C2A6');
+
+        }else{
+            $(este).css('border','solid 1px #E96153');
+
+        }
+      
+                
+     });  
+}
+
 function CargarGastosCedis(este){
 
     var id_se_cobra_a=$(este).val();
