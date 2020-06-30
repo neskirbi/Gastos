@@ -307,7 +307,14 @@ if($user!="0")
         $comprobadof=array();
         $balancef=array();
         //main query to fetch the data
-        $sql="SELECT che.fecha_pago,che.pago,che.cuenta,che.tipopago,tc.name as tch,gas.id, gas.id_cheque, gas.fecha, gas.fecha_comp, gas.status, gas.t_gasto,cla.name as clasif FROM gastos as gas join cheques as che on che.id=gas.id_cheque join user as usu on usu.id=che.beneficiario join clasificacion as cla on cla.id= che.clasificacion join t_cheque as tc on tc.id=che.t_cheque where $filtro    gas.fecha between '$arraydate[0]' and '$arraydate[1]' order by gas.fecha desc ";
+        $sql="SELECT che.fecha_pago,che.pago,che.cuenta,che.tipopago,tc.name as tch,gas.id, gas.id_cheque, gas.fecha, gas.fecha_comp, gas.status, gas.t_gasto,cla.name as clasif,che.FolioSantander,cs.name as cuentasalida,cs.id as csid
+         FROM gastos as gas 
+         left join cheques as che on che.id=gas.id_cheque 
+         left join user as usu on usu.id=che.beneficiario 
+         left join clasificacion as cla on cla.id= che.clasificacion 
+         left join t_cheque as tc on tc.id=che.t_cheque 
+         left join cuentasalida as cs on cs.id=che.cuentasalida 
+         where $filtro    gas.fecha between '$arraydate[0]' and '$arraydate[1]' order by gas.fecha desc ";
         $query = mysqli_query($con, $sql);
         $numrows=mysqli_num_rows($query);
 		
@@ -318,7 +325,7 @@ if($user!="0")
             ?>
             
            
-            <table  id="tabla" class="table table-striped jambo_table bulk_action">
+            <table  id="tabla" class="table table-striped jambo_table bulk_action" style="width: 150%;">
                 <thead >
                     <tr class="headings" >
 
@@ -332,7 +339,9 @@ if($user!="0")
                         <th class="column-title" >Solicitud</th>
                         <th class="column-title" >Monto</th>                        
                         <th class="column-title" >Entregado</th>
+                        <td class="column-title" >Cuenta salida</td>
                         <th class="column-title" >Cheque</th>
+                        <th class="column-title" >Folio de Envio</th>
                         <th class="column-title" >Comprobado</th>
                         <th class="column-title">Por comprobar </th>
                         <th class="column-title" >Factura OK</th>
@@ -401,6 +410,9 @@ if($user!="0")
 
                             $fecha=$sql_data['fecha'];
                             $fecha_confirm=$sql_data['fecha_confirm'];
+                            $cuentasalida=$r['cuentasalida'];
+                            $csid=$r['csid'];
+                            $FolioSantander=$r['FolioSantander'];
                             $description=$sql_data['concepto'];
                             $monto=$sql_data['monto'];
                             
@@ -474,14 +486,28 @@ if($user!="0")
                         <td ><div style="width:110px"><?php echo $programa; ?></div></td>
                         <td><div style="width:80px"><?php echo $fecha;?></div></td>
                         <td><div style="width:80px">$<?php echo number_format($monto,2);?></div></td>
-                        
                         <td><div style="width:80px"><?php echo $fecha_confirm;?></div></td>
+                        <td>
+                            <select class="form-control" data-id="<?php echo $id_cheque; ?>" id="cuentasalida" name="cuentasalida" onchange="Editarcuentasalida(this);">
+                                <option value="<?php echo $csid;?>"><?php echo $cuentasalida;?></option>
+                                <optgroup>
+                                <?php
+                                $categories = mysqli_query($con,"SELECT * from cuentasalida");
+                                while ($cat=mysqli_fetch_array($categories)) { ?>
+                                <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
+                                <?php 
+                                } 
+                                ?>
+                            </optgroup>
+                            </select>
+                        </td>
                         <td> <div style="width:80px"><?php echo $no_cheque;
                                 $archivo = glob("../vouchers/voucher-".$id_cheque.".*");
                                 if (!empty($archivo)) {
                                     echo "<a style='margin-left: 5px;' href='./vouchers/".$archivo[0]."'  class='btn btn-default'download><i class='glyphicon glyphicon-save'></i></a>";
                                 } 
                         ?> </div></td>
+                        <td style="width:310px;"><input id="<?php echo 'FS'.$id_cheque;?>" type="text" class="form-control" name="FolioSantander" value="<?php echo $FolioSantander;?>" onkeyup="EditarFolioSantander(this);" data-id="<?php echo $id_cheque; ?>"></td>
                         <td ><div style="width:80px">$<?php echo number_format($comprovado,2); ?></div></td>
                         
                         <td><div style="width:95px">$<?php echo number_format($balance,2); ?></div></td>
@@ -496,7 +522,7 @@ if($user!="0")
                         ?>
                                                
                         <td colspan="1">						
-		                       <div style="width:10px"><a href="#" class='btn btn-default' title='A&ntilde;adir gasto' onclick="('<?php echo $id_cheque;?>' , '<?php echo $nombre;?>', '<?php echo $correo;?>');" data-toggle="modal" data-target=".bs-example-modal-lg-udp"><i class="glyphicon glyphicon-edit"></i></a> 
+		                       <div style="width:10px"><a href="#" class='btn btn-default' title='A&ntilde;adir gasto' onclick="GetCategoriaIncome();obtener_datos('<?php echo $id_cheque;?>' , '<?php echo $nombre;?>', '<?php echo $correo;?>');" data-toggle="modal" data-target=".bs-example-modal-lg-udp"><i class="glyphicon glyphicon-edit"></i></a> 
 						</div>
 						</td>    
 					
@@ -534,6 +560,8 @@ if($user!="0")
                     <td></td>
                     <td></td>
                     <td>$<?php echo number_format(array_sum($montof),2);?></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td>$<?php echo number_format(array_sum($comprobadof),2);?></td>

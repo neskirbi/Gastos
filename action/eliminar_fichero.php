@@ -1,13 +1,14 @@
 <?php
 include "../config/config.php";
 	$id=$_POST['id'];
-	 $sql="SELECT comprobante from desglose where id='$id'";
+	$campo=$_POST['campo'];
+	 $sql="SELECT $campo from desglose where id='$id'";
 	$sql=mysqli_query($con,$sql);
 	$nombre=mysqli_fetch_array($sql);
-	$consulta="UPDATE desglose set comprobante='' where id='$id' ";
+	$consulta="UPDATE desglose set $campo='' where id='$id' ";
 	if(mysqli_query($con,$consulta))
 	{
-		if(unlink('../comprobantes/' . $nombre['comprobante']))
+		if(unlink('../comprobantes/' . $nombre[$campo]))
 		{
 			
 				echo"!Se elimino el fichero¡";

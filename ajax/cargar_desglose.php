@@ -78,7 +78,6 @@
                             {
                                 ?>
                                 <th>¿Cliente OK?</th>
-                                <th></th>
                                 <?php
                             }
 
@@ -87,7 +86,8 @@
                                 ?>
                                 <th>¿OK?</th>
 
-                        <th></th>
+                                <th>Factura</th>
+                                <th>Complemento</th>
                                 <?php
                             }
 
@@ -160,7 +160,7 @@
                             $iva=$r['iva'];
                             $id_cheque=$r['id_cheque'];
 
-                            if(""==$r['comprobante'])
+                            if(""==$r['factura'])
                             {
                             	$si_pdf="class='btn btn-default'";
                             	$deshabilita='disabled="disabled"';
@@ -170,14 +170,34 @@
 
                             }else
                             {
-                                $temp_fol=explode(".",$r['comprobante']);
+                                $temp_fol=explode(".",$r['factura']);
                                 $folio_fi=$temp_fol[0];
-                                $boton_des='<a target="_blank" href="comprobantes/'.$r['comprobante'].'" class="btn btn-default" title="Descarga de factura">
+                                $boton_des='<a target="_blank" href="comprobantes/'.$r['factura'].'" class="btn btn-default" title="Descarga de factura">
                                     <i class="fa fa-cloud-download"></i> </a>';
                             	$si_pdf="class='btn btn-success'";
                             	$deshabilita='';
                                 $deshabilita1='disabled="disabled"';                                
-                            	$onclick='onclick="eliminar_fichero('.$id.','.$id_cheque.')"';
+                            	$onclick='onclick="eliminar_fichero('.$id.','.$id_cheque.',\'factura\')"';
+                            }
+
+                            if(""==$r['comprobante'])
+                            {
+                                $si_pdf1="class='btn btn-default'";
+                                $deshabilita1='disabled="disabled"';
+                                $onclick1="";
+                                $boton_des1="";
+                                $folio_fi1="";
+
+                            }else
+                            {
+                                $temp_fol1=explode(".",$r['comprobante']);
+                                $folio_fi1=$temp_fol[0];
+                                $boton_des1='<a target="_blank" href="comprobantes/'.$r['comprobante'].'" class="btn btn-default" title="Descarga de comprobante">
+                                    <i class="fa fa-cloud-download"></i> </a>';
+                                $si_pdf1="class='btn btn-success'";
+                                $deshabilita1='';
+                                $deshabilita1='disabled="disabled"';                                
+                                $onclick1='onclick="eliminar_fichero('.$id.','.$id_cheque.',\'comprobante\')"';
                             }
                             if($deducible=="0"){
                                 $deducible="No";
@@ -299,7 +319,7 @@
                                     if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3"|| $_SESSION['programa']!="1"){
                                         ?>
 
-                                    <a href="#" <?php echo $si_pdf;?>  title='Adjuntar factura' onclick="id_subir('<?php echo $id;?>');" data-toggle="modal" data-target=".bs-example-modal-lg-subir"><i class="fa fa-cloud-upload"></i></a> 
+                                    <a href="#" <?php echo $si_pdf;?>  title='Adjuntar factura' onclick="id_subir('<?php echo $id;?>','factura');" data-toggle="modal" data-target=".bs-example-modal-lg-subir"><i class="fa fa-cloud-upload"></i></a> 
 
                                     <a href="#" class='btn btn-default' <?php echo $deshabilita;?> title='Eliminar factura'<?php echo $onclick; ?>>
                                     <i class="glyphicon glyphicon-trash"></i> </a>
@@ -319,6 +339,29 @@
                                     <?php
                                 }
                                 ?>
+                                
+                              
+
+                            </td>
+                            <td style="width: 150px;">
+                               
+                                    
+                                    <?php
+                                    if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3"|| $_SESSION['programa']!="1"){
+                                        ?>
+
+                                    <a href="#" <?php echo $si_pdf1;?>  title='Adjuntar Complemento' onclick="id_subir('<?php echo $id;?>','comprobante');" data-toggle="modal" data-target=".bs-example-modal-lg-subir"><i class="fa fa-cloud-upload"></i></a> 
+
+                                    <a href="#" class='btn btn-default' <?php echo $deshabilita1;?> title='Eliminar complemento'<?php echo $onclick1; ?>>
+                                    <i class="glyphicon glyphicon-trash"></i> </a>
+
+
+                                    <?php
+                                }
+                                echo $boton_des1;
+                                ?>
+
+                                    
                                 
                               
 

@@ -11,8 +11,8 @@
 <span id="span_nombre"></span>
 <form id="io" action="subir/subir2.php" enctype="multipart/form-data" method="post">
 <input name="imagen" id="imagen" type="file" style="visibility: hidden;" onchange="nombre();">
-<input name="campo" id="campo" type="text" style="visibility: hidden;" >
-<input type="text" name="id" id="id_gas" style="visibility: hidden;">
+<input name="complemento" id="imagen" type="file" style="visibility: hidden;" value="complemento">
+<input type="text" name="id" id="id_gas1" style="visibility: hidden;">
 
 <input type="text" name="nombre_ima" class="form-control" id="nombre_ima" placeholder="Folio de la factura o numero de ticket" required>
 <br>
@@ -32,7 +32,6 @@
             formData.append("imagen",$("input[name=imagen]")[0].files[0]);
             formData.append("id",$("input[name=id]")[0].value);
             formData.append("nombre_ima",$("input[name=nombre_ima]")[0].value.replace(' ',''));
-            formData.append("campo",$("input[name=campo]")[0].value.replace(' ',''));
             $.ajax({
                     url: frm.attr("action"),
                     type: frm.attr("method"),

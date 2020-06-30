@@ -1,6 +1,9 @@
 <?php
 include "../config/config.php";
 $id=$_POST['id'];
+$campo=$_POST['campo'];
+
+
 $nombre_ima=$_POST['nombre_ima'];
 $dir_subida = '../comprobantes/';
 $nombre=basename($_FILES['imagen']['name']);
@@ -33,7 +36,7 @@ $fichero_subido = $dir_subida . $nombre_ima;
 if(!file_exists($fichero_subido)){
 
 if (strpos($nombre,$pdf ) !== false || strpos($nombre,$xml) !== false||strpos($nombre,$jpg ) !== false ||strpos($nombre,$PDF ) !== false || strpos($nombre,$XML ) !== false || strpos($nombre,$JPG ) !== false) {
-    $consulta="UPDATE desglose set comprobante='$nombre_ima' where id=$id ";
+    $consulta="UPDATE desglose set $campo='$nombre_ima' where id=$id ";
 	if($sql=mysqli_query($con,$consulta))
     {
     	

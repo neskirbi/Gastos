@@ -599,7 +599,8 @@ $( "#add_income" ).submit(function( event ) {
           }
     });
   event.preventDefault();
-})
+  $('#save_data').attr("disabled", false);
+});
 
 
 
@@ -625,22 +626,25 @@ $( "#edi_income" ).submit(function( event ) {
           }
     });
   event.preventDefault();
-})
+});
 //
 
-function id_subir(id)
+function id_subir(id,campo)
 {
     document.getElementById('id_gas').value=id;
     $("#respuesta").html('');
     $("#span_nombre").html('');
+    $("#campo").val(campo);
 }
 
-function eliminar_fichero(id,id_cheque)
+
+
+function eliminar_fichero(id,id_cheque,campo)
 {
     console.log(id);
     if (confirm("Realmente deseas eliminar el fichero?"))
     {
-        $.post("action/eliminar_fichero.php", {id: id}, function(result){
+        $.post("action/eliminar_fichero.php", {id: id,campo:campo}, function(result){
             alert(result);
             if(!result.includes("Error"))
             {
@@ -960,10 +964,22 @@ function soli_reembolso()
 
     console.log(user_id+"--"+user_tipo+"--"+programa+"--"+monto+"--"+fecha+"--"+idben+"--"+nombreben+"--"+clasificacion+"--"+concepto+"--"+category+"--"+periodo+"--"+semana+"--"+cuenta+"--"+tipopago);
 
-    $.post("action/pedir-cheque.php",{user_id:user_id,user_tipo:user_tipo,programa:programa,monto:monto,fecha:fecha,idben:idben,nombreben:nombreben,clasificacion:clasificacion,concepto:concepto,category:category,periodo:periodo,semana:semana,cuenta:cuenta,tipopago:tipopago},function(result){
-        
-        load(0);
-    });
+    $.post("action/pedir-cheque.php",{
+    	user_id:user_id,user_tipo:user_tipo,
+    	programa:programa,
+    	monto:monto,
+    	fecha:fecha,
+    	idben:idben,
+    	nombreben:nombreben,
+    	clasificacion:clasificacion,
+    	concepto:concepto,
+    	category:category,
+    	periodo:periodo,
+    	semana:semana,
+    	cuenta:cuenta,
+    	tipopago:tipopago
+    },
+    function(result){ load(0); });
 }
 }
 
@@ -1140,7 +1156,40 @@ function pago(este)
 }
 
 
+function EditarFolioSantander(este){
+    var id=$(este).data("id");
+    var FolioSantander=$('#FS'+id).val();
 
+    $.post("action/EditarFolioSantander.php",{id:id,FolioSantander:FolioSantander} ,function (result){
+        if(result.includes("1")){
+            $('#FS'+id).css('border','solid 1px #40C2A6');
+
+        }else{
+            $('#FS'+id).css('border','solid 1px #E96153');
+
+        }
+      
+                
+     });  
+}
+
+
+function Editarcuentasalida(este){
+    var id=$(este).data("id");
+    var cuentasalida=$(este).val();
+
+    $.post("action/Editarcuentasalida.php",{id:id,cuentasalida:cuentasalida} ,function (result){
+        if(result.includes("1")){
+            $(este).css('border','solid 1px #40C2A6');
+
+        }else{
+            $(este).css('border','solid 1px #E96153');
+
+        }
+      
+                
+     });  
+}
 </script>
 
 <?php
