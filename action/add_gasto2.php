@@ -6,7 +6,7 @@
 
 	$id_cheque=$_REQUEST['id_cheque'];
 	$params=json_decode($_REQUEST['data'],true);
-	$values=array();;
+	$values=array();
 	foreach ($params as $key => $value) {
 		//print_r($params[$key]);
 		$date_added=$params[$key]['date'];
