@@ -268,17 +268,36 @@ function CrearGasto(){
     html+='<br><label style="width:200px;">Categoria</label><select id="Cat'+NumGastos+'" class="form-control" style=" display:inline-block; width:40%;">'+CategoriaIncomeopc+'</select><br>';
     html+='<br><label style="width:200px;">IVA</label><input id="I'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="text" name=""><br>';
     html+='<br><label style="width:200px;">Factura</label><input id="File1'+NumGastos+'" data-id="'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="file" name="" onchange="FiletoBase64(this,1);" disabled="disabled">';
+    html+='<br><label style="width:200px;">Folio</label><input id="NCom1'+NumGastos+'" class="form-control" style="display:inline-block; width:60%;" type="text" name="">';
 
+    html+='<br><input id="ExtCom1'+NumGastos+'" class="form-control" style="visibility:hidden; width:60%;" type="text" name="">';
     html+='<input id="Com1'+NumGastos+'" class="form-control" style=" visibility:hidden; width:60%;" type="text" name="">';
 
     html+='<label style="width:200px;">Complemento Pago</label><input id="File2'+NumGastos+'" data-id="'+NumGastos+'" class="form-control" style=" display:inline-block; width:60%;" type="file" name="" onchange="FiletoBase64(this,2);" disabled="disabled">';
+    html+='<br><label style="width:200px;">Folio</label><input id="NCom2'+NumGastos+'" class="form-control" style="display:inline-block; width:60%;" type="text" name="">';
 
+    html+='<br><input id="ExtCom2'+NumGastos+'" class="form-control" style="visibility:hidden; width:60%;" type="text" name="">';
     html+='<input id="Com2'+NumGastos+'" class="form-control" style=" visibility:hidden; width:60%;" type="text" name="">';
     html+='</div>';
     $('#contenedor_gastos').append(html);
     NumGastos++;
 }
+//Quita un formulario para agregar gastos
+function QuitarGasto(este){
+    $(este).parent().remove();
+    
+}
 
+function RequiredFactura(este){
+    if($(este).is(":checked")){
+        $('#File1'+$(este).data('id')).prop('disabled',false);
+        $('#File2'+$(este).data('id')).prop('disabled',false);
+    }else{
+        $('#File1'+$(este).data('id')).prop('disabled',true);
+        $('#File2'+$(este).data('id')).prop('disabled',true);
+    }
+    
+}
 
 //Guarda los gastos en su tabla
 function CargarGastos(){
@@ -288,7 +307,7 @@ function CargarGastos(){
     $('#contenedor_gastos').children().each(function(){
         if($(this).data('id')!=undefined){
             if($('#Des'+$(this).data('id')).val().length!=0 && $('#Cat'+$(this).data('id')).val()!=0){
-                 var json=JSON.parse('{}');
+                var json=JSON.parse('{}');
                 json.date=$('#FC'+$(this).data('id')).val();
                 json.date_fac=$('#FF'+$(this).data('id')).val();
                 json.description=$('#Des'+$(this).data('id')).val();
@@ -296,9 +315,8 @@ function CargarGastos(){
                 json.deducible=$('#Ded'+$(this).data('id')).is(":checked");
                 json.category=$('#Cat'+$(this).data('id')).val();
                 json.monto_iva=$('#I'+$(this).data('id')).val();
-                json.factura=$('#Com1'+$(this).data('id')).val();
-                json.comprobante=$('#Com2'+$(this).data('id')).val();
-
+                json.factura=$('#NCom1'+$(this).data('id')).val()+"."+$('#ExtCom1'+$(this).data('id')).val()+","+$('#Com1'+$(this).data('id')).val();
+                json.comprobante=$('#NCom2'+$(this).data('id')).val()+"."+$('#ExtCom2'+$(this).data('id')).val()+","+$('#Com2'+$(this).data('id')).val();
 
                 data.push(json);
             }else{
@@ -353,7 +371,9 @@ function FiletoBase64(este,numero) {
           var binaryData = e.target.result;
           //Converting Binary Data to base 64
           var base64String = window.btoa(binaryData);
-          $('#Com'+numero+$(este).data('id')).val(f.name+","+base64String);
+          var extencion=f.name.split(".");
+          $('#ExtCom'+numero+$(este).data('id')).val(extencion[1]);
+          $('#Com'+numero+$(este).data('id')).val(base64String);
         };
       })(f);
       // Read in the image file as a data URL.

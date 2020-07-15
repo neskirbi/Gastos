@@ -52,11 +52,11 @@
 
         
 
-        $sql="SELECT usu.name as nombre,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
+        $sql="SELECT prov.titular,prov.tipocuenta,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
         tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
-        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida  
+        che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida,cs.id as csid  
         FROM cheques as che 
-        left join user as usu on usu.id=che.beneficiario 
+        left join proveedores as prov on prov.id=che.beneficiario 
         left join t_cheque as tche on tche.id=che.t_cheque 
         left join programas as pro on pro.id=che.programa 
         left join t_pago as tpag on tpag.id=che.tipopago
@@ -78,6 +78,7 @@
                     <th class="column-title">Gasto </th>
                     <th class="column-title">Concepto</th>
                     <th class="column-title">Beneficiario </th>
+                    <th class="column-title">Tipo Cuenta</th>
                     <th class="column-title">Programa </th>
                     <th class="column-title">Solicitud </th>
                     <th class="column-title">Monto </th>                        
@@ -119,14 +120,16 @@
                         
                         $monto=$r['monto'];
                         
-                        if($r['bennombre']=="0")
+                       
+                         if($r['bennombre']=="0")
                         {
                            
-                            $name=$r['nombre'];
+                            $titular=$r['titular'];
                         }else
                         {
-                            $name=$r['bennombre'];
+                            $titular=$r['bennombre'];
                         }
+                        $tipocuenta=$r['tipocuenta'];
 
                         
                         $t_gasto=$r['t_cheque'];
@@ -159,7 +162,8 @@
                 
                     <td><div style="width:120px"><?php echo $t_gasto;?></div></td>
                     <td><div style="width:200px"><?php echo $concepto;?></div></td>
-                    <td><div style="width:200px"><?php echo utf8_encode($name);?></div></td>
+                    <td><div style="width:200px"><?php echo utf8_encode($titular);?></div></td>
+                    <td><div style="width:200px"><?php echo $tipocuenta;?></div></td>
                     <td><div style="width:100px"><?php echo $programa;?></div></td>
                     <td><div style="width:80px"><?php echo $fecha; ?></div></td>
                     <td><div style="width:90px">$<?php echo number_format($monto,2);?></div></td>

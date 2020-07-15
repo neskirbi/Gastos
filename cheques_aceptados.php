@@ -5,7 +5,7 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
     echo("<script>
             this.location='dashboard.php';</script>");
 }
-    $title ="Sastos Aceptados | ";
+    $title ="Gastos Aceptados | ";
     include "head.php";
 	$active5="active";
     include "sidebar.php"; 

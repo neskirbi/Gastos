@@ -51,7 +51,7 @@
 		    	?>
 				<div class="alert alert-danger" role="alert">
 					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Error! Verifiar el nombre del archivo.</strong> 
+					<strong>Error! Verifiar el nombre del archivo. <?php echo $facturaname; ?></strong> 
 						
 				</div>
 				<?php		    	

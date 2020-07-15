@@ -217,12 +217,12 @@ function cancelar_cheque(id,este)
 }
 
 
-    function aceptar_cheque(id,este)
+    function aceptar_cheque(id,este,tpago)
     {
         document.getElementById('a'+este).disabled= false;
         document.getElementById('c'+este).disabled= false;
         var no_cheque=document.getElementById('no_cheque'+este).value;
-        if(no_cheque.length!=0)
+        if(no_cheque.length!=0 || tpago=="Transferencia")
         {
             var q= $("#q").val();
             if (confirm("Realmente deseas aceptar el cheque")){  
