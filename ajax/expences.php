@@ -279,27 +279,32 @@ ini_set('display_errors', '1');
          }
          
          //$arraydate[1]=str_replace(" ","",($fecha2[2]."-".$fecha2[1]."-".$fecha2[0]));
-         
-$por_per="";
-if($user!="0")
-            {
-                $por_per="usu.id='".$user."' and ";
-            }
+                 
+        $por_per="";
+        if($user!="0")
+        {
+            $por_per="usu.id='".$user."' and ";
+        }
 
-          $filtro="";
+        $filtro="";
         if($_SESSION['user_tipo']=="0" || $_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="-2")
         {
           $filtro=" che.programa!='100' and $por_per ";
         }
         
-        if($_SESSION['user_tipo']=="3"||$_SESSION['user_tipo']=="5" ||$_SESSION['user_tipo']=="4" )
+        if($_SESSION['user_tipo']=="3" ||$_SESSION['user_tipo']=="4" )
         {
             
-          $filtro=" che.programa='".$_SESSION['programa']."' and usu.rutas IN ('".str_replace(",","','",$_SESSION['rutas'])."') and  $por_per ";
+          //$filtro=" che.programa='".$_SESSION['programa']."' and usu.rutas IN ('".str_replace(",","','",$_SESSION['rutas'])."') and  $por_per ";
+          $filtro=" che.programa='".$_SESSION['programa']."' and  $por_per ";
+        }
+        if($_SESSION['user_tipo']=="5"){
+             $filtro="  $por_per ";
         }
         if($_SESSION['user_tipo']=="2")
         {
-          $filtro="  usu.id='".$_SESSION['user_id']."' and   ";
+          //$filtro="  usu.id='".$_SESSION['user_id']."' and   ";
+          $filtro="    ";
         }
 
 			
@@ -307,13 +312,19 @@ if($user!="0")
         $comprobadof=array();
         $balancef=array();
         //main query to fetch the data
-        $sql="SELECT che.fecha_pago,che.pago,che.cuenta,che.tipopago,tc.name as tch,gas.id, gas.id_cheque, gas.fecha, gas.fecha_comp, gas.status, gas.t_gasto,cla.name as clasif,che.FolioSantander,cs.name as cuentasalida,cs.id as csid
-         FROM gastos as gas 
-         left join cheques as che on che.id=gas.id_cheque 
-         left join user as usu on usu.id=che.beneficiario 
-         left join clasificacion as cla on cla.id= che.clasificacion 
-         left join t_cheque as tc on tc.id=che.t_cheque 
-         left join cuentasalida as cs on cs.id=che.cuentasalida 
+        $sql="SELECT  prov.titular,prov.tipocuenta,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
+        tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
+        cla.name as clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida,cs.id as csid  ,gas.id, gas.id_cheque, gas.fecha, gas.fecha_comp, gas.status, gas.t_gasto,che.fecha_pago,che.pago,des.com_val,des.ok_val,des.id
+
+        FROM gastos as gas 
+        join cheques as che on che.id=gas.id_cheque 
+        join desglose as des on des.id_cheque=gas.id_cheque 
+        left join proveedores as prov on prov.id=che.beneficiario 
+        left join t_cheque as tche on tche.id=che.t_cheque 
+        left join programas as pro on pro.id=che.programa 
+        left join t_pago as tpag on tpag.id=che.tipopago
+        left join clasificacion as cla on cla.id=che.clasificacion 
+        left join cuentasalida as cs on cs.id=che.cuentasalida
          where $filtro    gas.fecha between '$arraydate[0]' and '$arraydate[1]' order by gas.fecha desc ";
         $query = mysqli_query($con, $sql);
         $numrows=mysqli_num_rows($query);
@@ -359,44 +370,39 @@ if($user!="0")
                 <tbody>
                 <?php 
                         while ($r=mysqli_fetch_array($query)) {
-                            $t_cheque=$r['tch'];
-							$t_cuenta=$r['cuenta'];
+                            $id=$r['id'];
+                            $check3="";
+                            $display3='';
+							if($r['ok_val']=="1")
+                            {
+                                $check3="checked";
+                                $display3='style="display:none;"';
+                                
+                            }
                             $fechaPago=$r['fecha_pago'];
 							
 							
 							$tipopago=$r['tipopago'];
 
-                            if($tipopago!="0"){        
-                                $consulta_ctp="SELECT name from t_pago where id='".$tipopago."' ";
-                                $sql_data=mysqli_query($con ,$consulta_ctp) ;
-                                $tpag=mysqli_fetch_array($sql_data);
-                                $tipopago=$tpag['name'];
-                            }
-		
-
-                            $consulta="SELECT * from cheques where id='".$r['id_cheque']."'";
-                            $sql=mysqli_query($con,$consulta);
-                            $sql_data=mysqli_fetch_array($sql);
+                          
                             
-                            $staus_che=$sql_data['status'];
+                            $staus_che=$r['status'];
                             
                             
-                            if($sql_data['bennombre']=="0")
+                            if($r['bennombre']=="0")
                             {
-                                $consulta_n="SELECT * from user where id='".$sql_data['beneficiario']."'";
-                                $sql_n=mysqli_query($con,$consulta_n);
-                                $sql_data_n=mysqli_fetch_array($sql_n);
-                                $nombre=$sql_data_n['name'];
-
+                               
+                                $titular=$r['titular'];
                             }else
                             {
-                                $nombre=$sql_data['bennombre'];
+                                $titular=$r['bennombre'];
                             }
-                            $clasif=$r['clasif'];
+                            $tipocuenta=$r['tipocuenta'];
+                            $clasif=$r['clasificacion'];
 
                             
-                            $no_cheque=$sql_data['no_cheque'];
-                            $id_cheque=$r['id_cheque'];
+                            $no_cheque=$r['no_cheque'];
+                            $id_cheque=$r['id'];
                             
                             $pago="checked disabled";
                             if($r['pago']==0)
@@ -408,20 +414,22 @@ if($user!="0")
                                 }
                             }
 
-                            $fecha=$sql_data['fecha'];
-                            $fecha_confirm=$sql_data['fecha_confirm'];
+                            $fecha=$r['fecha'];
+                            $fecha_confirm=$r['fecha_confirm'];
+                            $Cuenta=$r['Cuenta'];
                             $cuentasalida=$r['cuentasalida'];
                             $csid=$r['csid'];
                             $FolioSantander=$r['FolioSantander'];
-                            $description=$sql_data['concepto'];
-                            $monto=$sql_data['monto'];
+                            $description=$r['concepto'];
+                            $monto=$r['monto'];
+                            $concepto=$r['concepto'];
                             
                             
 
-                            $consulta2="SELECT * from t_cheque where id='".$sql_data['t_cheque']."'";
-                            $sql2=mysqli_query($con,$consulta2);
-                            $sql_data2=mysqli_fetch_array($sql2);
-                            $name_category=$sql_data2['name'];
+                          
+                            $t_cheque=$r['t_cheque'];
+                            $programa=$r['programa'];
+                            $comen3=$r['com_val'];
 
 
                             $comprovado="SELECT sum(amount+iva) as balance from desglose where ((id_cheque='$id_cheque' and comprobante!='') )  ";
@@ -433,17 +441,15 @@ if($user!="0")
 
 
                             $coin_name = "coin";
-                            $querycoin = mysqli_query($con,"select * from configuration where name=\"$coin_name\" ");
+                            $querycoin = mysqli_query($con,"SELECT * from configuration where name=\"$coin_name\" ");
                             if ($r = mysqli_fetch_array($querycoin)) {
                                 $coin=$r['val'];
                             }
                             
-                            $concepto=$sql_data['concepto'];
-                            $programa=$sql_data['programa'];
-                            $consulta="SELECT name from programas where id='".$programa."' ";
+                            /*$consulta="SELECT name from programas where id='".$programa."' ";
                             $sql_data=mysqli_query($con ,$consulta) ;
                             $pro=mysqli_fetch_array($sql_data);
-                            $programa=$pro['name'];
+                            $programa=$pro['name'];*/
                            
                             $montof[]=$monto;
                             $comprobadof[]=$comprovado;
@@ -467,8 +473,8 @@ if($user!="0")
                                 continue;
                             }
 
-                            $results=mysqli_fetch_array(mysqli_query($con ,"SELECT email from user where name='$nombre'"));
-                            $correo=$results['email'];
+                            $results=mysqli_fetch_array(mysqli_query($con ,"SELECT email from user where name='$titular'"));
+                            @$correo=$results['email'];
 
                             if(verificar($id_cheque,$_SESSION['user_tipo'])){
                             	if(folio_fis($id_cheque,$folio)){
@@ -481,8 +487,8 @@ if($user!="0")
                         <td><div style="width:50px"><input style="width:45px" value="<?php echo $id_cheque; ?>" type="checkbox" onchange="pago(this);" <?php echo $pago; ?>  > <?php echo $fechaPago;?> </div></td>
 						<td><div style="width:130px"><?php echo $t_cheque?></div></td>
 						<td><div style="width:90px"><?php  echo $tipopago?></div></td>                       
-					    <td><div style="width:100px"><?php echo $t_cuenta?></div></td>
-						<td><div style="width:250px" style="font-size:12px" ><?php echo utf8_encode($nombre); ?></div></td>
+					    <td><div style="width:150px"><?php echo $Cuenta?></div></td>
+						<td><div style="width:250px" style="font-size:12px" ><?php echo utf8_encode($titular); ?></div></td>
                         <td ><div style="width:110px"><?php echo $programa; ?></div></td>
                         <td><div style="width:80px"><?php echo $fecha;?></div></td>
                         <td><div style="width:80px">$<?php echo number_format($monto,2);?></div></td>
@@ -503,9 +509,9 @@ if($user!="0")
                         </td>
                         <td> <div style="width:80px"><?php echo $no_cheque;
                                 $archivo = glob("../vouchers/voucher-".$id_cheque.".*");
-                                if (!empty($archivo)) {
-                                    echo "<a style='margin-left: 5px;' href='./vouchers/".$archivo[0]."'  class='btn btn-default'download><i class='glyphicon glyphicon-save'></i></a>";
-                                } 
+                        if (!empty($archivo)) {
+                            echo "<a style='margin-left: 5px;' href='./vouchers/".$archivo[0]."'  class='btn btn-default'download><i class='glyphicon glyphicon-save'></i></a>";
+                        } 
                         ?> </div></td>
                         <td style="width:310px;"><input id="<?php echo 'FS'.$id_cheque;?>" type="text" class="form-control" name="FolioSantander" value="<?php echo $FolioSantander;?>" onkeyup="EditarFolioSantander(this);" data-id="<?php echo $id_cheque; ?>"></td>
                         <td ><div style="width:80px">$<?php echo number_format($comprovado,2); ?></div></td>
@@ -514,7 +520,10 @@ if($user!="0")
 						<td><div style="width:75px"><?php fr($id_cheque);?></div></td>
                         <td><div style="width:85px"><?php reg_ok($id_cheque);?></div></td>
                         <td><div style="width:70px"><?php cli_ok($id_cheque);?></div></td>
-                        <td><div style="width:70px"><?php ad_ok($id_cheque);?></div></td>
+                        
+                        <td><input  type="checkbox" onchange="ok_val(this);" value="<?php echo $id;?>" <?php echo $check3; ?> >
+                            <br><input value="<?php echo $comen3; ?>" class="form-control" onkeyup="guarda_com_val(this);" type="text"  <?php echo $display3; ?> id="comen3<?php echo $id;?>"></td>
+                        <!--<td><div style="width:70px"><?php ad_ok($id_cheque);?></div></td>-->
                         <td><div style="width:70px"><?php pago($id_cheque);?></div></td>
 
                              <?php
@@ -522,7 +531,7 @@ if($user!="0")
                         ?>
                                                
                         <td colspan="1">						
-		                       <div style="width:10px"><a href="#" class='btn btn-default' title='A&ntilde;adir gasto' onclick="GetCategoriaIncome();obtener_datos('<?php echo $id_cheque;?>' , '<?php echo $nombre;?>', '<?php echo $correo;?>');" data-toggle="modal" data-target=".bs-example-modal-lg-udp"><i class="glyphicon glyphicon-edit"></i></a> 
+		                       <div style="width:10px"><a href="#" class='btn btn-default' title='A&ntilde;adir gasto' onclick="GetCategoriaIncome();obtener_datos('<?php echo $id_cheque;?>' , '<?php echo $titular;?>', '<?php echo $correo;?>');" data-toggle="modal" data-target=".bs-example-modal-lg-udp"><i class="glyphicon glyphicon-edit"></i></a> 
 						</div>
 						</td>    
 					

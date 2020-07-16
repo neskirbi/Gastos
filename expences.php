@@ -732,10 +732,9 @@ function guarda_com_cli(este)
 function guarda_com_val(este)
 {
     este.style="border:solid #E7A3A3 1px; background-color: #EEAAAA;";
-    console.log(este.value);
     var id =este.id.replace("comen3","");
     var texto=este.value;
-    console.log(id);
+    console.log("id:"+id+"   val:"+este.value);
     $.post("action/com_val.php", {id:id,comen:texto}, function(result){
         if(result=="1")
         {
@@ -837,7 +836,28 @@ function ok_sup(este)
 
 
 }
-
+function ok_val(este)
+{
+    var comen=document.getElementById("comen3"+este.value);
+    var che="";
+    if (este.checked) {
+        che="1";
+        comen.style="display:none;";
+        comen.value="";
+    }else
+    {
+        che="0";
+        comen.style="display:yes;";
+    }
+    var id = este.value;
+    console.log("id:"+id+"   che:"+che);
+    $.post("action/ok_val.php",{id:id,che:che},function(result){
+        
+            alert(result);
+       
+        
+    });
+}
 function ok_cli(id,id_cheque,opt)
 {
     console.log(id);

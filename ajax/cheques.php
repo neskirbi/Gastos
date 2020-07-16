@@ -32,31 +32,31 @@
       if(isset($_GET['s'])){
             switch ($_GET['s']) {
                 case '0':
-                    $filtro=" che.status='0' and che.fecha='$daterange' and cla.descripcion!='Servicio'  ";
+                    $filtro=" che.status='0' and che.fecha='$daterange' and che.pagoservicio!='1'  ";
                     if($daterange==''){
-                        $filtro=" che.status='0' and cla.descripcion!='Servicio'  ";
+                        $filtro=" che.status='0' and che.pagoservicio!='1'  ";
                     }
                     
                 break;
                 
                 case'1':
-                    $filtro=" che.status='1' and che.fecha='$daterange' and cla.descripcion!='Servicio'   ";
+                    $filtro=" che.status='1' and che.fecha='$daterange' and che.pagoservicio!='1'   ";
                     if($daterange==''){
-                        $filtro=" che.status='1' and cla.descripcion!='Servicio'  ";
+                        $filtro=" che.status='1' and che.pagoservicio!='1'  ";
                     }
                 break;
 
                 case'2':
-                    $filtro=" che.status='2' and che.fecha='$daterange' and cla.descripcion!='Servicio'  ";
+                    $filtro=" che.status='2' and che.fecha='$daterange' and che.pagoservicio!='1'  ";
                     if($daterange==''){
-                        $filtro=" che.status='2' and cla.descripcion!='Servicio'  ";
+                        $filtro=" che.status='2' and che.pagoservicio!='1'  ";
                     }
                 break;
 
                 case's':
-                    $filtro=" che.fecha='$daterange' and cla.descripcion='Servicio'  ";
+                    $filtro=" che.fecha='$daterange' and che.pagoservicio='1'  ";
                     if($daterange==''){
-                        $filtro=" cla.descripcion='Servicio'  ";
+                        $filtro=" che.pagoservicio='1'  ";
                     }
                 break;
             }
@@ -67,7 +67,8 @@
 
     }else if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="5" || $_SESSION['user_tipo']=="4" )
     {
-      $filtro="  che.programa='".$_SESSION['programa']."' and usu.rutas IN ('".str_replace(",","','",$_SESSION['rutas'])."')  ";
+      //$filtro="  che.programa='".$_SESSION['programa']."' and usu.rutas IN ('".str_replace(",","','",$_SESSION['rutas'])."')  ";
+      $filtro="  che.programa='".$_SESSION['programa']."'  ";
 
     }else if($_SESSION['user_tipo']=="0")
     {
@@ -107,7 +108,8 @@
                     <th class="column-title">Periodo</th>
                     <th class="column-title">Semana</th>
                     <th class="column-title">Gasto </th>
-                    <th class="column-title">Concepto</th>
+                    <th class="column-title">Clasificaci&oacute;n</th>
+                    <th class="column-title">Descripci&oacute;n</th>
                     <th class="column-title">Beneficiario </th>
                     <th class="column-title">Tipo Cuenta</th>
                     <th class="column-title">Programa </th>
@@ -174,6 +176,7 @@
                         $csid=$r['csid'];
                         //$tipop=$r['tipopago'];
                         $programa=$r['programa']; 
+                        $clasificacion=$r['descripcion']; 
                         $tipopago=$r['tipopago'];
                         $fecha_entrega=$r['fecha_confirm'];
                         $fecha=$r['fecha'];
@@ -192,6 +195,7 @@
                     <td><div style="width:50px"><?php echo $semana; ?></div></td>
                 
                     <td><div style="width:120px"><?php echo $t_gasto;?></div></td>
+                    <td><div style="width:200px"><?php echo $clasificacion;?></div></td>
                     <td><div style="width:200px"><?php echo $concepto;?></div></td>
                     <td><div style="width:200px"><?php echo utf8_encode($titular);?></div></td>
                     <td><div style="width:200px"><?php echo $tipocuenta;?></div></td>
@@ -233,25 +237,30 @@
                     
 
                         
-                    
-                        if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']!="2")
-                        {
-                            ?>
-                            <td>
-                            <input class="form-control" style="width:120px" type="text" name="no_cheque" id="no_cheque<?php echo $cont;?>" placeholder="No. Cheque" >
-                            </td>
-                            <?php                            
-                        }else
-                        {
-                            ?>
-                                <td><?php echo $no_cheque;?></td>
-                            <?php
+                        if($tipopago!="Transferencia"){
+                            if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']=="1")
+                            {
+                                ?>
+                                <td>
+                                <input class="form-control" style="width:120px" type="text" name="no_cheque" id="no_cheque<?php echo $cont;?>" placeholder="No. Cheque" >
+                                </td>
+                                <?php                            
+                            }else
+                            {
+                                ?>
+                                    <td><?php echo $no_cheque;?></td>
+                                <?php
+                            }
+
+                        }else{
+                            echo'<td></td>';
                         }
+                        
                     
                     ?>
                    
                     <?php
-                    if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']=="1")
+                    if ( $r['status']=="1")
                     {
                         echo'<td><div style="width:300px"><input id="FS'.$id.'" type="text" class="form-control" name="FolioSantander" value="'.$FolioSantander.'" onkeyup="EditarFolioSantander(this);" data-id="'.$id.'"></div></td>';
                     }else{

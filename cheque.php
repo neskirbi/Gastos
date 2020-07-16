@@ -247,7 +247,12 @@ function cancelar_cheque(id,este)
     {
         document.getElementById('a'+este).disabled= false;
         document.getElementById('c'+este).disabled= false;
-        var no_cheque=document.getElementById('no_cheque'+este).value;
+        
+        if(tpago!="Transferencia"){
+            var no_cheque=document.getElementById('no_cheque'+este).value;
+        }else{
+            var no_cheque='';
+        }
         if(no_cheque.length!=0 || tpago=="Transferencia")
         {
             var q= $("#q").val();

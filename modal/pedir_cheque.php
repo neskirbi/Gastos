@@ -132,7 +132,7 @@
 									 <div class="col-md-5 pull-left" style="width:33%">
                                     
                                         <select class="form-control" id="tipopago" name="tipopago" required="required">
-                                            <option selected="" value="">-- Tipo Pago --</option>
+                                            <option selected="" value="">-- Tipo de Pago --</option>
                                             <?php
                                              
                                             $tpago = mysqli_query($con,$consulta_pa);
@@ -157,6 +157,16 @@
                                     </div> 
 									
 							  </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br>
+                                    <div class="col-md-4 pull-left" style="width:30%">
+                                      <label>Pago de Servicio</label>
+                                      <input type="checkbox" name="pagoservicio">
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
