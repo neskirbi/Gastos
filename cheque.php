@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0"|| $_SESSION['user_tipo']=="3"){
 }else{
     echo("<script>
@@ -7,7 +8,32 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
 }
     $title ="Solicitar cheque | ";
     include "head.php";
-	$active4="active";
+	
+    $status="1";
+    $url="cheques.php";
+    if(isset($_GET['s'])){
+        $status=$_GET['s'];
+        switch ($_GET['s']) {
+            case '0':
+                $active6="active";
+            break;
+
+            case '1':
+                $active4="active";
+            break;
+            
+            case '2':
+                $active5="active";
+            break;
+
+            case 's':
+                $active7="active";
+            break;
+        }
+    }else{
+        $active4="active";
+        $status="1";
+    }
     include "sidebar.php"; 
 ?>
     <div class="right_col" role="main"> <!-- page content -->
@@ -35,7 +61,7 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                         <form class="form-horizontal" role="form" id="datos_cotizacion">
                             <div class="form-group row">
                                 <div class="col-md-3 pull-left">
-                                        <input type="date" class="form-control" id="date" name="date" value="<?php echo date('Y-m-d');?>"  onchange="load(1);">
+                                        <input type="date" class="form-control" id="date" name="date"   onchange="load(1);">
                                     </div>
                                
                                 <div class="col-md-2">
@@ -148,7 +174,7 @@ function load(page){
             var daterange= $("#date").val();
             $("#loader").fadeIn('slow');
             $.ajax({
-                url:'./ajax/cheques.php?action=ajax&page='+page+'&daterange='+daterange+'&q='+q,
+                url:'./ajax/cheques.php?action=ajax&page='+page+'&daterange='+daterange+'&q='+q+"&s=<?php echo $status;?>",
                  beforeSend: function(objeto){
                  $('#loader').html('<img src="./images/ajax-loader.gif"> Cargando...');
               },

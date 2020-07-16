@@ -29,7 +29,41 @@
 
     if( $_SESSION['user_tipo']=="1" )
     {
-      $filtro=" che.status='1' or (che.fecha='$daterange' and che.status='1')  ";
+      if(isset($_GET['s'])){
+            switch ($_GET['s']) {
+                case '0':
+                    $filtro=" che.status='0' and che.fecha='$daterange' and cla.descripcion!='Servicio'  ";
+                    if($daterange==''){
+                        $filtro=" che.status='0' and cla.descripcion!='Servicio'  ";
+                    }
+                    
+                break;
+                
+                case'1':
+                    $filtro=" che.status='1' and che.fecha='$daterange' and cla.descripcion!='Servicio'   ";
+                    if($daterange==''){
+                        $filtro=" che.status='1' and cla.descripcion!='Servicio'  ";
+                    }
+                break;
+
+                case'2':
+                    $filtro=" che.status='2' and che.fecha='$daterange' and cla.descripcion!='Servicio'  ";
+                    if($daterange==''){
+                        $filtro=" che.status='2' and cla.descripcion!='Servicio'  ";
+                    }
+                break;
+
+                case's':
+                    $filtro=" che.fecha='$daterange' and cla.descripcion='Servicio'  ";
+                    if($daterange==''){
+                        $filtro=" cla.descripcion='Servicio'  ";
+                    }
+                break;
+            }
+        }else{
+
+          $filtro=" che.status='1' or (che.fecha='$daterange' and che.status='1')  ";
+        }
 
     }else if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="5" || $_SESSION['user_tipo']=="4" )
     {
@@ -162,26 +196,40 @@
                     <td><div style="width:200px"><?php echo utf8_encode($titular);?></div></td>
                     <td><div style="width:200px"><?php echo $tipocuenta;?></div></td>
                     <td><div style="width:100px"><?php echo $programa;?></div></td>
-                    <td><div style="width:80px"><?php echo $fecha; ?></div></td>
-                    <td><div style="width:90px">$<?php echo number_format($monto,2);?></div></td>
-                    <td><div style="width:80px"><?php echo $fecha_entrega; ?></div></td>
-                    <td><div style="width:80px"><?php echo $tipopago; ?></div></td>
-                    <td><div style="width:110px"><?php echo $Cuenta; ?></div></td>
-                    <td>
-                        <select class="form-control" data-id="<?php echo $id; ?>" id="cuentasalida" name="cuentasalida" required="required" onchange="Editarcuentasalida(this);">
-                            <option value="<?php echo $csid;?>"><?php echo $cuentasalida;?></option>
-                            <optgroup>
-                            <?php
-                            $categories = mysqli_query($con,"SELECT * from cuentasalida");
-                            while ($cat=mysqli_fetch_array($categories)) { ?>
-                            <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
-                            <?php 
-                            } 
-                            ?>
-                        </optgroup>
-                        </select>
-                    </td>
+                    <td><div style="width:150px"><?php echo $fecha; ?></div></td>
+                    <td><div style="width:150px">$<?php echo number_format($monto,2);?></div></td>
+                    <td><div style="width:150px"><?php echo $fecha_entrega; ?></div></td>
+                    <td><div style="width:150px"><?php echo $tipopago; ?></div></td>
+                    <td><div style="width:200px"><?php echo $Cuenta; ?></div></td>
                     <?php
+                    
+
+                        
+                    
+                        if ($r['status']=="1")
+                        {
+                            ?>
+                            <td><div style="width:250px">
+                                <select class="form-control" data-id="<?php echo $id; ?>" id="cuentasalida" name="cuentasalida" required="required" onchange="Editarcuentasalida(this);">
+                                    <option value="<?php echo $csid;?>"><?php echo $cuentasalida;?></option>
+                                    <optgroup>
+                                    <?php
+                                    $categories = mysqli_query($con,"SELECT * from cuentasalida");
+                                    while ($cat=mysqli_fetch_array($categories)) { ?>
+                                    <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
+                                    <?php 
+                                    } 
+                                    ?>
+                                </optgroup>
+                                </select>
+                            </div>
+                            </td>
+                        <?php
+                        }else{
+                            ?>
+                            <td><?php echo $cuentasalida;?></td>
+                            <?php
+                        }
                     
 
                         
@@ -205,9 +253,9 @@
                     <?php
                     if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']=="1")
                     {
-                        echo'<td style="width:310px;"><input id="FS'.$id.'" type="text" class="form-control" name="FolioSantander" value="'.$FolioSantander.'" onkeyup="EditarFolioSantander(this);" data-id="'.$id.'"></td>';
+                        echo'<td><div style="width:300px"><input id="FS'.$id.'" type="text" class="form-control" name="FolioSantander" value="'.$FolioSantander.'" onkeyup="EditarFolioSantander(this);" data-id="'.$id.'"></div></td>';
                     }else{
-                        echo'<td style="width:310px;">'.$FolioSantander.'</td>';
+                        echo'<td><div style="width:300px">'.$FolioSantander.'</div></td>';
                     }
                     
                     echo'<td>';
