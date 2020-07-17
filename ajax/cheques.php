@@ -47,9 +47,9 @@
                 break;
 
                 case'2':
-                    $filtro=" che.status='2' and che.fecha='$daterange' and che.pagoservicio!='1'  ";
+                    $filtro=" che.status='2' and che.fecha='$daterange' and che.pagoservicio!='1' and che.autorizado='0' ";
                     if($daterange==''){
-                        $filtro=" che.status='2' and che.pagoservicio!='1'  ";
+                        $filtro=" che.status='2' and che.pagoservicio!='1' and che.autorizado='0' ";
                     }
                 break;
 
@@ -124,6 +124,7 @@
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;✓&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;×&nbsp;</th>
+                    <th class="column-title">Autorizar</th>
                     <th></th>
                 </tr>
             </thead>
@@ -205,15 +206,11 @@
                     <td><div style="width:150px"><?php echo $fecha_entrega; ?></div></td>
                     <td><div style="width:150px"><?php echo $tipopago; ?></div></td>
                     <td><div style="width:200px"><?php echo $Cuenta; ?></div></td>
-                    <?php
-                    
-
-                        
-                    
-                        if ($r['status']=="1")
-                        {
-                            ?>
-                            <td><div style="width:250px">
+                    <td>
+                        <div style="width:200px">
+                            <?php
+                            if ($r['status']=="1")
+                            {?> 
                                 <select class="form-control" data-id="<?php echo $id; ?>" id="cuentasalida" name="cuentasalida" required="required" onchange="Editarcuentasalida(this);">
                                     <option value="<?php echo $csid;?>"><?php echo $cuentasalida;?></option>
                                     <optgroup>
@@ -226,14 +223,14 @@
                                     ?>
                                 </optgroup>
                                 </select>
-                            </div>
-                            </td>
-                        <?php
-                        }else{
-                            ?>
-                            <td><?php echo $cuentasalida;?></td>
-                            <?php
-                        }
+                                 <?php
+                            }else{
+                                echo $cuentasalida;
+                            }?>
+                        </div>
+                    </td>
+                    <?php
+                    
                     
 
                         
@@ -319,6 +316,14 @@
                      }
                     ?>
 
+                    </td>
+
+
+                    <td>
+                        <?php if($_SESSION['user_tipo']=="1"){
+                            echo '<center><input type="checkbox" data-id="'.$id.'" name="autorizarcheck"></center>';
+                        }?>
+                        
                     </td>
                     
                 </tr>

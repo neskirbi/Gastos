@@ -58,56 +58,72 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                         <div id="result_user"></div>
                         
                         <!-- form search -->
-                        <form class="form-horizontal" role="form" id="datos_cotizacion">
-                            <div class="form-group row">
-                                <div class="col-md-3 pull-left">
-                                        <input type="date" class="form-control" id="date" name="date"   onchange="load(1);">
-                                    </div>
-                               
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-default" onclick='load(1);'>
-                                        <span class="glyphicon glyphicon-search" ></span> Buscar
-                                    </button>
-                                    
+                        
+                        <div class="form-group row">
+                            <div class="col-md-3 pull-left">
+                                    <input type="date" class="form-control" id="date" name="date"   onchange="load(1);">
                                 </div>
-                              
-                                <div class="col-md-2">
-                                    
-                                    <?php
-                                    
-                                    if($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0")
-                                    {
-                                        ?>
-                                        <button type="button" class="btn btn-default" onclick='exportar();'>
-                                        <span class="glyphicon glyphicon-export" ></span> Exportar</button>
-                                        
-                                        
-                                        <?php
-                                    }
-                                    ?>
-                                    <!-- <span id="loader"></span> -->
-                                </div>   
-                                  <div class="col-md-3">
-                                    <input type="text" style="width: 250px;" class="form-control" id="cheque" name="" placeholder="No. cheque ej. (1), (1,2,3), (1-13)" >
-                                </div>
-                                <div class="col-md-2">
-                                    
-                                    <!-- <span id="loader"></span> -->
-                                    <?php
-                                    
-                                    if($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0")
-                                    {
-                                        ?>
-                                       
-                                        <button type="button" class="btn btn-default" onclick='imprimircheque();'>
-                                        <span class="glyphicon glyphicon-print" ></span> Imprimir</button>
-                                        <?php
-                                    }
-                                    ?>
-                                    <!-- <span id="loader"></span> -->
-                                </div>   
+                           
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-default" onclick='load(1);'>
+                                    <span class="glyphicon glyphicon-search" ></span> Buscar
+                                </button>
+                                
                             </div>
-                        </form>   
+                          
+                            <div class="col-md-2">
+                                
+                                <?php
+                                
+                                if($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0")
+                                {
+                                    ?>
+                                    <button type="button" class="btn btn-default" onclick='exportar();'>
+                                    <span class="glyphicon glyphicon-export" ></span> Exportar</button>
+                                    
+                                    
+                                    <?php
+                                }
+                                ?>
+                                <!-- <span id="loader"></span> -->
+                            </div>   
+                            <div class="col-md-2">
+                                <input type="text" style="width: 250px;" class="form-control" id="cheque" name="" placeholder="No. cheque ej. (1), (1,2,3), (1-13)" >
+                            </div>
+                            <div class="col-md-2">
+                                
+                                <!-- <span id="loader"></span> -->
+                                <?php
+                                
+                                if($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0")
+                                {
+                                    ?>
+                                   
+                                    <button type="button" class="btn btn-default" onclick='imprimircheque();'>
+                                    <span class="glyphicon glyphicon-print" ></span> Imprimir </button>
+
+                                    <?php
+                                    
+                                    if($_SESSION['user_tipo']=="1")
+                                    {
+                                        ?>
+                                        <button type="button" class="btn btn-success" onclick='AutorizarGastos();'>
+                                        <span class="glyphicon glyphicon-ok " ></span> Autorizar</button>
+                                        <?php
+                                    }
+                                    ?>
+
+                                    
+                                    <?php
+                                }
+                                ?>
+                                <!-- <span id="loader"></span> -->
+                            </div>
+                                
+                            <!-- <span id="loader"></span> -->
+                           
+                                <!-- <span id="loader"></span> -->
+                        </div>   
                         <!-- end form search -->
 
                         <div class="x_content">
@@ -307,6 +323,35 @@ function send_mails(mails,mensaje)
     $.post("http://cbd.mine.nu/mail/send_mails.php",{mails:mails,mensaje:mensaje} ,function (result){
     alert( result);
   });   
+}
+
+function AutorizarGastos(){
+    var ids=[];
+    if(confirm("Desar Autorizar los gastos?")){
+        $('input[name=autorizarcheck]').each(function(){
+
+            if($(this).is(':checked')){
+                var json=JSON.parse('{}');
+                json.id=$(this).data('id')
+                ids.push(json);
+            }        
+        });
+        if(ids,length>0){
+            var idsjson = JSON.stringify(ids);
+            $.post("action/AutorizarGastos.php",{ids:idsjson},function(result){
+                
+                $("#resultados").html(result);
+                load(1);
+
+                //
+            });
+        }else{
+            alert("No has seleccionado ningún gasto.")
+        }
+       
+        
+    }
+    
 }
 
 
