@@ -124,7 +124,11 @@
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;✓&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;×&nbsp;</th>
+                    <?php if($_GET['s']==2){
+                    ?>
                     <th class="column-title">Autorizar</th>
+                    <?php    
+                    }?>
                     <th></th>
                 </tr>
             </thead>
@@ -280,7 +284,7 @@
                         {
                             ?>
                            <td colspan="1"> 
-                                <center><div class="alert-success" style="width:60px"><i class="fa fa-check "></i>&nbsp;Aceptado&nbsp;</div></center>
+                                <center><div class="alert-success" style="width:80px"><i class="fa fa-check "></i>&nbsp;Aceptado&nbsp;</div></center>
                             </td>                              
                            <td colspan="1"> 
                            <center><div style="width:10px"> <a  href="#" class='btn btn-danger' title='Rechazar' onclick="cancelar_cheque('<?php echo $id; ?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a>
@@ -320,7 +324,7 @@
 
 
                     <td>
-                        <?php if($_SESSION['user_tipo']=="1"){
+                        <?php if($_SESSION['user_tipo']=="1" && $_GET['s']==2){
                             echo '<center><input type="checkbox" data-id="'.$id.'" name="autorizarcheck"></center>';
                         }?>
                         
@@ -339,3 +343,5 @@
         
     }
 ?>
+
+<script type="text/javascript" src="js/FileSaver.js" />

@@ -520,13 +520,20 @@ ini_set('display_errors', '1');
 						<td><div style="width:75px"><?php fr($id_cheque);?></div></td>
                         <td><div style="width:85px"><?php reg_ok($id_cheque);?></div></td>
                         <td><div style="width:70px"><?php cli_ok($id_cheque);?></div></td>
+
+                        <?php if($_SESSION['user_tipo']=='5'){?>
                         
                         <td><input  type="checkbox" onchange="ok_val(this);" value="<?php echo $id;?>" <?php echo $check3; ?> >
                             <br><input value="<?php echo $comen3; ?>" class="form-control" onkeyup="guarda_com_val(this);" type="text"  <?php echo $display3; ?> id="comen3<?php echo $id;?>"></td>
                         <!--<td><div style="width:70px"><?php ad_ok($id_cheque);?></div></td>-->
                         <td><div style="width:70px"><?php pago($id_cheque);?></div></td>
 
-                             <?php
+                        <?php
+                        }else{
+                            ?>
+                        <td><div style="width:70px"><?php ad_ok($id_cheque);?></div></td>
+                            <?php
+                        }
 
                         ?>
                                                

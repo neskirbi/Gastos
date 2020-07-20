@@ -69,9 +69,7 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                                     <span class="glyphicon glyphicon-search" ></span> Buscar
                                 </button>
                                 
-                            </div>
-                          
-                            <div class="col-md-2">
+                           
                                 
                                 <?php
                                 
@@ -90,35 +88,57 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                             <div class="col-md-2">
                                 <input type="text" style="width: 250px;" class="form-control" id="cheque" name="" placeholder="No. cheque ej. (1), (1,2,3), (1-13)" >
                             </div>
-                            <div class="col-md-2">
                                 
                                 <!-- <span id="loader"></span> -->
                                 <?php
                                 
-                                if($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0")
+                                if(($_SESSION['user_tipo']=="1" || $_SESSION['user_tipo']=="0") && $_GET['s']==2)
                                 {
                                     ?>
-                                   
-                                    <button type="button" class="btn btn-default" onclick='imprimircheque();'>
-                                    <span class="glyphicon glyphicon-print" ></span> Imprimir </button>
+                                    <div class="col-sm-2">
 
-                                    <?php
-                                    
-                                    if($_SESSION['user_tipo']=="1")
-                                    {
-                                        ?>
-                                        <button type="button" class="btn btn-success" onclick='AutorizarGastos();'>
-                                        <span class="glyphicon glyphicon-ok " ></span> Autorizar</button>
+                                        <select class="form-control" id="fechaautorizado" >
+                                           <option selected="" value="0">-- Fecha --</option>
+                                            <?php
+                                            
+                                            $query = mysqli_query($con,"SELECT distinct(fechaautorizado) as fechaautorizado from cheques where fechaautorizado!='0000-00-00' order by fechaautorizado desc");
+                                            while ($row=mysqli_fetch_array($query)) 
+                                            {
+                                                
+                                                ?>
+                                                 <option value="<?php echo $row['fechaautorizado']; ?>" <?php echo $marca; ?>">Autorizacion: <?php echo $row['fechaautorizado']; ?></option>
+
+                                                <?php 
+                                            } 
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-default" onclick='DescargarMismobanco();'>
+                                        <span class="glyphicon glyphicon-download" ></span> Mismobanco </button>
+
+
+                                        <button type="button" class="btn btn-default" onclick='DescargarInterban();'>
+                                        <span class="glyphicon glyphicon-download" ></span> Interban </button>
+
+
+                                       
                                         <?php
-                                    }
-                                    ?>
-
                                     
+                                        if($_SESSION['user_tipo']=="1")
+                                        {
+                                            ?>
+                                            <button type="button" class="btn btn-success" onclick='AutorizarGastos();'>
+                                            <span class="glyphicon glyphicon-ok " ></span> Autorizar</button>
+                                            <?php
+                                        }
+                                        
+                                    ?> 
+                                    </div> 
                                     <?php
                                 }
                                 ?>
                                 <!-- <span id="loader"></span> -->
-                            </div>
                                 
                             <!-- <span id="loader"></span> -->
                            
@@ -336,7 +356,7 @@ function AutorizarGastos(){
                 ids.push(json);
             }        
         });
-        if(ids,length>0){
+        if(ids.length>0){
             var idsjson = JSON.stringify(ids);
             $.post("action/AutorizarGastos.php",{ids:idsjson},function(result){
                 
@@ -353,6 +373,44 @@ function AutorizarGastos(){
     }
     
 }
+
+function DescargarMismobanco(){
+    var fechaautorizado=$('#fechaautorizado').val();
+    if(fechaautorizado=="0"){
+        alert("Seleccione una fecha.")
+    }else{
+
+        $.post("ajax/Mismobanco.php",{fechaautorizado:fechaautorizado},function(result){
+            var json=JSON.parse(result);
+            console.log(json);
+            var txt="";
+            for(var i in json){
+               txt+="LTX07"+json[i].cuentasalida+"   "+json[i].cuenta+"   "+json[i].monto+"   "+json[i].FolioSantander+"   "+json[i].fecha+"   "+json[i].email+"\n";
+            }
+            console.log(txt);
+            //var blob = new Blob([result], {type: "text/plain;charset=utf-8"});
+            //saveAs(blob, "Interban.txt");            
+        });
+    }
+    
+}
+
+function DescargarInterban(){
+    var fechaautorizado=$('#fechaautorizado').val();
+    if(fechaautorizado=="0"){
+        alert("Seleccione una fecha.")
+    }else{
+
+        $.post("ajax/Interban.php",{fechaautorizado:fechaautorizado},function(result){
+            console.log(result);
+            //var blob = new Blob([result], {type: "text/plain;charset=utf-8"});
+            //saveAs(blob, "Interban.txt");            
+        });
+    }
+    
+}
+
+
 
 
 

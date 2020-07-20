@@ -6,7 +6,7 @@
   `fecha` varchar(10) NOT NULL,
   `fecha_confirm` varchar(10) NOT NULL,
   `solicitante` int(11) NOT NULL,
-  `beneficiario` int(11) NOT NULL,
+  `beneficiario` varchar(100) NOT NULL,
   `bennombre` varchar(150) NOT NULL,
   `concepto` varchar(500) NOT NULL,
   `t_cheque` int(11) NOT NULL,
@@ -15,18 +15,21 @@
   `a_iva` float NOT NULL,
   `pago` int(11) DEFAULT ''0'',
   `fecha_pago` date DEFAULT NULL,
-  `periodo` int(11) NOT NULL,
+  `periodo` varchar(150) NOT NULL,
   `semana` varchar(50) NOT NULL,
   `tipopago` int(11) NOT NULL,
   `cuenta` varchar(50) NOT NULL,
-  `se_cobra_a_list` int(11) DEFAULT NULL,
-  `cedis_gastos_list` int(11) DEFAULT NULL,
-  `FolioSantander` varchar(500) DEFAULT NULL,
-  `cvalidacion` varchar(150) DEFAULT NULL,
-  `referencia` int(11) DEFAULT NULL,
-  `cuentasalida` int(11) DEFAULT NULL,
+  `se_cobra_a_list` int(11) NOT NULL,
+  `cedis_gastos_list` int(11) NOT NULL,
+  `FolioSantander` varchar(500) NOT NULL,
+  `cvalidacion` varchar(150) NOT NULL,
+  `referencia` int(20) NOT NULL,
+  `cuentasalida` int(20) NOT NULL,
+  `pagoservicio` int(20) DEFAULT ''0'',
+  `autorizado` int(11) DEFAULT ''0'',
+  `fechaautorizado` date DEFAULT ''0000-00-00'',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1851 DEFAULT CHARSET=utf8'
+) ENGINE=InnoDB AUTO_INCREMENT=1811 DEFAULT CHARSET=utf8'
 
 'CREATE TABLE `desglose` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
