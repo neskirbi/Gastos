@@ -381,15 +381,16 @@ function DescargarMismobanco(){
     }else{
 
         $.post("ajax/Mismobanco.php",{fechaautorizado:fechaautorizado},function(result){
+            //console.log(result);
             var json=JSON.parse(result);
-            console.log(json);
+            //console.log(json);
             var txt="";
             for(var i in json){
-               txt+="LTX07"+json[i].cuentasalida+"   "+json[i].cuenta+"   "+json[i].monto+"   "+json[i].FolioSantander+"   "+json[i].fecha+"   "+json[i].email+"\n";
+               txt+=json[i].cuentasalida+"   "+json[i].cuenta+"   "+json[i].monto+"   "+json[i].FolioSantander+"   "+json[i].fecha+"   "+json[i].email+"\n";
             }
-            console.log(txt);
-            //var blob = new Blob([result], {type: "text/plain;charset=utf-8"});
-            //saveAs(blob, "Interban.txt");            
+            //console.log(txt);
+            var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "Mismobanco"+fechaautorizado.split('-').join('')+".txt");            
         });
     }
     
@@ -402,9 +403,16 @@ function DescargarInterban(){
     }else{
 
         $.post("ajax/Interban.php",{fechaautorizado:fechaautorizado},function(result){
-            console.log(result);
-            //var blob = new Blob([result], {type: "text/plain;charset=utf-8"});
-            //saveAs(blob, "Interban.txt");            
+            //console.log(result);
+            var json=JSON.parse(result);
+            //console.log(json);
+            var txt="";
+            for(var i in json){
+               txt+=json[i].cuentasalida+"   "+json[i].cuenta+"   "+json[i].clavebanco+"   "+json[i].titular+"   "+json[i].monto+"   "+json[i].plazabanco+"   "+json[i].FolioSantander+"   "+json[i].fecha+"   "+json[i].email+"\n";
+            }
+            //console.log(txt);
+            var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "Interban"+fechaautorizado.split('-').join('')+".txt");            
         });
     }
     

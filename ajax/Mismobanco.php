@@ -1,57 +1,21 @@
 <?php
-function Reemplaza($string){
-	$string = str_replace("(", " ",$string);
-	$string = str_replace(")", " ",$string);
-	$string = str_replace(".", " ",$string);
-	$string = str_replace(",", " ",$string);
-	$string = str_replace("°", " ",$string);
-	$string = str_replace("'", " ",$string);
-	$string = str_replace("!", " ",$string);
-	$string = str_replace("#", " ",$string);
-	$string = str_replace("%", " ",$string);
-	$string = str_replace("=", " ",$string);
-	$string = str_replace("?", " ",$string);
-	$string = str_replace("¡", " ",$string);
-	$string = str_replace("¿", " ",$string);
-	$string = str_replace("*", " ",$string);
-	$string = str_replace("{", " ",$string);
-	$string = str_replace("}", " ",$string);
-	$string = str_replace("[", " ",$string);
-	$string = str_replace("]", " ",$string);
-	$string = str_replace(">", " ",$string);
-	$string = str_replace("<", " ",$string);
-	$string = str_replace(";", " ",$string);
-	$string = str_replace(":", " ",$string);
-	$string = str_replace("_", " ",$string);
-	$string = str_replace("-", " ",$string);
-	$string = str_replace("+", " ",$string);
-	$string = str_replace("-", " ",$string);
-	$string = str_replace("&", " ",$string);
-	$string = str_replace("|", " ",$string);
-	$string = str_replace("á", "A",$string);
-	$string = str_replace("é", "E",$string);
-	$string = str_replace("í", "I",$string);
-	$string = str_replace("ó", "O",$string);
-	$string = str_replace("ú", "U",$string);
-	$string = str_replace("Á", "A",$string);
-	$string = str_replace("É", "E",$string);
-	$string = str_replace("Í", "I",$string);
-	$string = str_replace("Ó", "O",$string);
-	$string = str_replace("Ú", "U",$string);
-	$string = str_replace("ü", "U",$string);
-	$string = str_replace("ö", "O",$string);
-	return $string;
-}
 
 include"../config/config.php";
+include"../funciones/funciones.php";
 $fechaautorizado=$_REQUEST['fechaautorizado'];
-$sql="SELECT che.cuentasalida,pro.cuenta,che.monto,che.FolioSantander,che.fecha,pro.email from cheques as che 
+$sql="SELECT che.cuentasalida,pro.cuenta,pro.clavebanco,che.monto,che.FolioSantander,che.fecha,pro.email from cheques as che 
 left join proveedores as pro on pro.id = che.beneficiario 
 where che.fechaautorizado='$fechaautorizado' and pro.tipocuenta='SANTAN' order by fechaautorizado desc";
 $rows = mysqli_query($con,$sql);
 $areglo=array();
-while ($row=mysqli_fetch_array($rows)){
-	$row['FolioSantander']=Reemplaza($row['FolioSantander']);
+while ($row=mysqli_fetch_array($rows)){	
+	$row['cuentasalida']=Acomodar(("LTX07".$row['cuentasalida']),"r",18," ");
+	$row['cuenta']=Acomodar($row['cuenta'],"r",20," ");
+	$row['clavebanco']=Acomodar($row['clavebanco'],"r",5,"x");
+	$row['monto']=Acomodar(($row['monto']*100),"r",18,"0");
+	$row['FolioSantander']=Acomodar(Reemplaza($row['FolioSantander']),"r",40,"x");
+	$row['fecha']=Acomodar(str_replace("-","",$row['fecha']),"r",0,"");
+	$row['email']=Acomodar($row['email'],"r",0,"");
 	$areglo[]=$row;
 }
 
