@@ -120,6 +120,8 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
 
                                         <button type="button" class="btn btn-default" onclick='DescargarInterban();'>
                                         <span class="glyphicon glyphicon-download" ></span> Interban </button>
+                                    </div>
+                                </div>
 
 
                                        
@@ -128,13 +130,16 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                                         if($_SESSION['user_tipo']=="1")
                                         {
                                             ?>
+                                        <div class="form-group row">
+                                        <div class="col-md-2 pull-right">
                                             <button type="button" class="btn btn-success" onclick='AutorizarGastos();'>
                                             <span class="glyphicon glyphicon-ok " ></span> Autorizar</button>
+                                        </div> 
+                                    </div>
                                             <?php
                                         }
                                         
                                     ?> 
-                                    </div> 
                                     <?php
                                 }
                                 ?>
@@ -386,7 +391,7 @@ function DescargarMismobanco(){
             //console.log(json);
             var txt="";
             for(var i in json){
-               txt+=json[i].cuentasalida+"   "+json[i].cuenta+"   "+json[i].monto+"   "+json[i].FolioSantander+"   "+json[i].fecha+"   "+json[i].email+"\n";
+               txt+=json[i].cuentasalida+"  "+json[i].cuenta+"  "+json[i].monto+"  "+json[i].FolioSantander+"  "+json[i].fecha+"  "+json[i].email+"\n";
             }
             //console.log(txt);
             var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
@@ -408,7 +413,7 @@ function DescargarInterban(){
             //console.log(json);
             var txt="";
             for(var i in json){
-               txt+=json[i].cuentasalida+"   "+json[i].cuenta+"   "+json[i].clavebanco+"   "+json[i].titular+"   "+json[i].monto+"   "+json[i].plazabanco+"   "+json[i].FolioSantander+"   "+json[i].fecha+"   "+json[i].email+"\n";
+               txt+=json[i].cuentasalida+"  "+json[i].cuenta+"  "+json[i].clavebanco+json[i].titular+"  "+json[i].monto+json[i].plazabanco+json[i].FolioSantander+"       "+json[i].email+"         \n";
             }
             //console.log(txt);
             var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
