@@ -132,7 +132,7 @@
 									 <div class="col-md-5 pull-left" style="width:33%">
                                     
                                         <select class="form-control" id="tipopago" name="tipopago" required="required">
-                                            <option selected="" value="">-- Tipo de Pago --</option>
+                                            <option selected="" >-- Tipo de Pago --</option>
                                             <?php
                                              
                                             $tpago = mysqli_query($con,$consulta_pa);

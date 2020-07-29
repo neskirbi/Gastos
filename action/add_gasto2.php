@@ -20,7 +20,7 @@
 		$comprobantename="";
 		$facturaname="";
 
-	    if($params[$key]['factura']!=""){
+	    if(strlen($params[$key]['factura'])>10){
 	    	$facturat=explode(",",$params[$key]['factura']);
 		    $facturaname=$facturat[0];
 		    $factura64=$facturat[1];
@@ -32,7 +32,7 @@
 			fclose($file);
 	    }
 
-	    if($params[$key]['comprobante']!=""){
+	    if(strlen($params[$key]['comprobante'])>10){
 	    	$comprobantet=explode(",",$params[$key]['comprobante']);
 		    $comprobantename=$comprobantet[0];
 		    $comprobante64=$comprobantet[1];

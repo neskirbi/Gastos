@@ -51,18 +51,21 @@ if($sql=mysqli_query($con,$consulta))
 	$idcheque= mysqli_insert_id($con);
 
 	if($referencia==0){
-		$update="UPDATE cheques set FolioSantander=CONCAT('".$idcheque."',FolioSantander)  where id='".$idcheque."'  ";
-		if($sql=mysqli_query($con,$update))
-		{
-			
-		}else{
-	    	?>
-			<div class="alert alert-error" role="alert">
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<strong>¡Error! Al guardar FolioSanander. <?php echo mysqli_error($con); ?></strong>
-			</div>
-		<?php
-	    }
+		if($category!="1"){
+			$update="UPDATE cheques set FolioSantander=CONCAT('".$idcheque."',FolioSantander)  where id='".$idcheque."'  ";
+			if($sql=mysqli_query($con,$update))
+			{
+				
+			}else{
+		    	?>
+				<div class="alert alert-error" role="alert">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>¡Error! Al guardar FolioSanander. <?php echo mysqli_error($con); ?></strong>
+				</div>
+			<?php
+		    }
+		}
+		
 	}
 
 	

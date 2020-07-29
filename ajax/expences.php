@@ -317,8 +317,8 @@ ini_set('display_errors', '1');
         cla.name as clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida,cs.id as csid  ,gas.id, gas.id_cheque, gas.fecha, gas.fecha_comp, gas.status, gas.t_gasto,che.fecha_pago,che.pago,des.com_val,des.ok_val,des.id
 
         FROM gastos as gas 
-        join cheques as che on che.id=gas.id_cheque 
-        join desglose as des on des.id_cheque=gas.id_cheque 
+        left join cheques as che on che.id=gas.id_cheque 
+        left join desglose as des on des.id_cheque=che.id 
         left join proveedores as prov on prov.id=che.beneficiario 
         left join t_cheque as tche on tche.id=che.t_cheque 
         left join programas as pro on pro.id=che.programa 

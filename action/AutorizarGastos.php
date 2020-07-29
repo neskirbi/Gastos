@@ -12,7 +12,7 @@
     }
     //print_r($ids);
     $ids = implode("','",$ids);
-    $fecha=date("Y-m-d");
+    $fecha=date("Y-m-d H:i:s");
     $sql="UPDATE cheques SET autorizado='1',fechaautorizado='$fecha' WHERE id in ('".$ids."') " ;
     if ($autorizado=mysqli_query($con,$sql)){
         ?>

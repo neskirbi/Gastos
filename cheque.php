@@ -98,7 +98,7 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                                     <div class="col-sm-2">
 
                                         <select class="form-control" id="fechaautorizado" >
-                                           <option selected="" value="0">-- Fecha --</option>
+                                           <!--<option selected="" value="0">-- Fecha --</option>
                                             <?php
                                             
                                             $query = mysqli_query($con,"SELECT distinct(fechaautorizado) as fechaautorizado from cheques where fechaautorizado!='0000-00-00' order by fechaautorizado desc");
@@ -106,11 +106,11 @@ if($_SESSION['user_tipo']=="4" || $_SESSION['user_tipo']=="1" || $_SESSION['user
                                             {
                                                 
                                                 ?>
-                                                 <option value="<?php echo $row['fechaautorizado']; ?>" <?php echo $marca; ?>">Autorizacion: <?php echo $row['fechaautorizado']; ?></option>
+                                                 <option value="<?php echo $row['fechaautorizado']; ?>">Autorizacion: <?php echo $row['fechaautorizado']; ?></option>
 
                                                 <?php 
                                             } 
-                                            ?>
+                                            ?>-->
                                         </select>
                                     </div>
                                     <div class="col-md-2">
@@ -367,6 +367,7 @@ function AutorizarGastos(){
                 
                 $("#resultados").html(result);
                 load(1);
+                FechaAutorizado();
 
                 //
             });
@@ -394,8 +395,13 @@ function DescargarMismobanco(){
                txt+=json[i].cuentasalida+"  "+json[i].cuenta+"  "+json[i].monto+"  "+json[i].FolioSantander+"  "+json[i].fecha+"  "+json[i].email+"\n";
             }
             //console.log(txt);
-            var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, "Mismobanco"+fechaautorizado.split('-').join('')+".txt");            
+            if(txt!=""){
+                var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, "Mismobanco"+fechaautorizado.split('-').join('')+".txt");   
+            }else{
+                alert("No hay datos para este archivo en esta fecha.");
+            }
+                     
         });
     }
     
@@ -416,12 +422,28 @@ function DescargarInterban(){
                txt+=json[i].cuentasalida+"  "+json[i].cuenta+"  "+json[i].clavebanco+json[i].titular+"  "+json[i].monto+json[i].plazabanco+json[i].FolioSantander+"       "+json[i].email+"         \n";
             }
             //console.log(txt);
-            var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, "Interban"+fechaautorizado.split('-').join('')+".txt");            
+            if(txt!=""){
+                var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, "Interban"+fechaautorizado.split('-').join('')+".txt"); 
+            }else{
+                alert("No hay datos para este archivo en esta fecha.");
+            }
+                       
         });
     }
     
 }
+
+
+function FechaAutorizado(){
+    $.post("ajax/GetFechaAutorizados.php",{},function(result){
+        $('#fechaautorizado').html(result);
+    });
+}
+
+$(document).ready(function(){
+    FechaAutorizado();
+});
 
 
 

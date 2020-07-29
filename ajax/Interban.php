@@ -3,9 +3,10 @@
 include"../config/config.php";
 include"../funciones/funciones.php";
 $fechaautorizado=$_REQUEST['fechaautorizado'];
-$sql="SELECT che.cuentasalida,pro.cuenta,pro.clavebanco,pro.titular,che.monto,pro.plazabanco,che.FolioSantander,che.fecha,pro.email from cheques as che 
+$sql="SELECT che.tipopago,che.cuentasalida,pro.cuenta,pro.clavebanco,pro.titular,che.monto,pro.plazabanco,che.FolioSantander,che.fecha,pro.email 
+from cheques as che 
 left join proveedores as pro on pro.id = che.beneficiario 
-where che.fechaautorizado='$fechaautorizado' and pro.tipocuenta='EXTRNA' order by fechaautorizado desc";
+where che.fechaautorizado='$fechaautorizado' and pro.tipocuenta='EXTRNA' and che.tipopago!='1' order by fechaautorizado desc";
 $rows = mysqli_query($con,$sql);
 $areglo=array();
 while ($row=mysqli_fetch_array($rows)){	

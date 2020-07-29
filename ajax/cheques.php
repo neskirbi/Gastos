@@ -42,7 +42,7 @@
                 case'1':
                     $filtro=" che.status='1' and che.fecha='$daterange' and che.pagoservicio!='1'   ";
                     if($daterange==''){
-                        $filtro=" che.status='1' and che.pagoservicio!='1'  ";
+                        $filtro=" che.status='1'   ";
                     }
                 break;
 
@@ -56,7 +56,7 @@
                 case's':
                     $filtro=" che.fecha='$daterange' and che.pagoservicio='1'  ";
                     if($daterange==''){
-                        $filtro=" che.pagoservicio='1'  ";
+                        $filtro=" che.status!='1' and che.pagoservicio='1'  ";
                     }
                 break;
             }
@@ -84,8 +84,8 @@
 
         
 
-        $sql="SELECT prov.titular,prov.tipocuenta,che.id as id ,che.no_cheque,che.status as status,che.monto,che.bennombre,che.beneficiario,
-        tche.name as t_cheque,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
+        $sql="SELECT prov.titular,prov.tipocuenta,che.id as id ,che.no_cheque,che.status,che.monto,che.bennombre,che.beneficiario,
+        tche.name as t_cheque,che.t_cheque as t_cheque2,che.concepto,pro.name as programa,che.fecha,che.fecha_confirm, che.semana, che.periodo, che.Cuenta, tpag.name as tipopago,
         che.clasificacion,cla.descripcion,che.FolioSantander,che.referencia,cs.name as cuentasalida,cs.id as csid  
         FROM cheques as che 
         left join proveedores as prov on prov.id=che.beneficiario 
@@ -170,6 +170,7 @@
 
                         
                         $t_gasto=$r['t_cheque'];
+                        $t_gasto2=$r['t_cheque2'];
                         $referencia=$r['referencia'];                        
 
                         $periodo=$r['periodo'];
@@ -190,8 +191,8 @@
                 <input type="hidden" value="<?php echo $concepto;?>" id="concepto<?php echo $id;?>">
                 <input type="hidden" value="<?php echo $status;?>" id="status_user<?php echo $id;?>">
                 <?php
-                    if(verificar($id)=="1" or $r['t_cheque']!="3" or $_SESSION['user_tipo']!="1")
-                    {
+                    if(verificar($id)!="1" && $t_gasto2=="1"  && $_SESSION['user_tipo']!="5")
+                    {}else{
                 ?>
 
                 <tr class="even pointer">
@@ -273,28 +274,28 @@
                     {
                         if($r['status']=="1"){
                         ?>
-                         <td colspan="1">   
+                         <td>   
                            <div style="width:10px"><a id="a<?php echo $cont;?>" href="#" class='btn btn-success' title='Aceptar'  onclick="aceptar_cheque('<?php echo $id;?>','<?php echo $cont;?>','<?php echo $tipopago;?>');"data-toggle="modal" data-target=".bs-example-modal-lg-upd"><i class="fa fa-check"></i></a> </div>
                          </td>
-                         <td colspan="1">   
+                         <td>   
                            <div style="width:10px"><a id="c<?php echo $cont;?>" href="#" class='btn btn-danger'  title='Rechazar' onclick="rechazar_cheque('<?php echo $id;?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a> </div>
                          </td>
                         <?php
                         }else if($r['status']=="2")
                         {
                             ?>
-                           <td colspan="1"> 
-                                <center><div class="alert-success" style="width:80px"><i class="fa fa-check "></i>&nbsp;Aceptado&nbsp;</div></center>
+                           <td> 
+                                <center><div class="alert-success" style="width:80px"><i class="fa fa-check "></i>Aceptado</div></center>
                             </td>                              
-                           <td colspan="1"> 
-                           <center><div style="width:10px"> <a  href="#" class='btn btn-danger' title='Rechazar' onclick="cancelar_cheque('<?php echo $id; ?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a>
+                           <td> 
+                           <center><div style="width:10px"> <a  href="#" class='btn btn-danger' title='Cancelar' onclick="cancelar_cheque('<?php echo $id; ?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a>
                            </div></center>
                           </td> 
                           
                             <?php
-                        }else if($r['status']=="0")
-                        {
+                        }else if($r['status']=="0"){
                             ?>
+                            <td>
                                 <center><div class="alert-danger"><i class="fa fa-close"></i> Rechazado</div></center>
                             <?php
                         }
@@ -303,17 +304,20 @@
                         if($r['status']=="2")
                         {
                             ?>
+                            <td>
                                 <center><div class="alert-success"><i class="fa fa-check "></i> Aceptado</div></center>
                             <?php
                         }else if($r['status']=="0")
                         {
                             ?>
+                            <td>
                                 <center><div class="alert-danger"><i class="fa fa-close"></i> Rechazado</div></center>
                             <?php
                         }else if($r['status']=="1")
                         {
                             ?>
-                            <center><div class="alert-warning"><i class="fa fa-clock-o"></i> Pendiente</div></center>
+                            <td>
+                                <center><div class="alert-warning"><i class="fa fa-clock-o"></i> Pendiente</div></center>
                             <?php
                         }
                         
@@ -324,7 +328,7 @@
 
 
                     <td>
-                        <?php if($_SESSION['user_tipo']=="1" && $_GET['s']==2){
+                        <?php if($_SESSION['user_tipo']=="1" && $_GET['s']==2 && $tipopago!='Cheque'){
                             echo '<center><input type="checkbox" data-id="'.$id.'" name="autorizarcheck"></center>';
                         }?>
                         
