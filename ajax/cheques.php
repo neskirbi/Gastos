@@ -1,14 +1,28 @@
 <?php
     include "../config/config.php";//Contiene funcion que conecta a la base de datos
     session_start();
-    function verificar($id)
+    $CategoriasOptions="";
+    function GetCategoriasOptions(){
+        global $con;
+        if($CategoriasOptions==""){
+            $categories = mysqli_query($con,"SELECT * from cuentasalida");
+            while ($cat=mysqli_fetch_array($categories)) { 
+                $CategoriasOptions.='<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
+            }
+            return $CategoriasOptions;
+        }else{
+            return $CategoriasOptions;
+        }
+        
+    }
+    function verificar($itd_cheque)
     {
         global $con;
-        $consulta="SELECT * from desglose where id_cheque='".$id."' ";
+        $consulta="SELECT * from desglose where id_cheque='".$itd_cheque."' ";
         $sql_data=mysqli_query($con,$consulta);
         $num=mysqli_num_rows($sql_data);
 
-        $consulta="SELECT * from desglose where id_cheque='".$id."' and ok_val='1' ";
+        $consulta="SELECT * from desglose where id_cheque='".$itd_cheque."' and ok_val='1' ";
         $sql_data=mysqli_query($con,$consulta);
         $num2=mysqli_num_rows($sql_data);
 
@@ -67,8 +81,8 @@
 
     }else if($_SESSION['user_tipo']=="2" || $_SESSION['user_tipo']=="3" || $_SESSION['user_tipo']=="5" || $_SESSION['user_tipo']=="4" )
     {
-      //$filtro="  che.programa='".$_SESSION['programa']."' and usu.rutas IN ('".str_replace(",","','",$_SESSION['rutas'])."')  ";
-      $filtro="  che.programa='".$_SESSION['programa']."'  ";
+        //$filtro="  che.programa='".$_SESSION['programa']."' and usu.rutas IN ('".str_replace(",","','",$_SESSION['rutas'])."')  ";
+        $filtro="  che.programa='".$_SESSION['programa']."'  ";
 
     }else if($_SESSION['user_tipo']=="0")
     {
@@ -121,142 +135,111 @@
                     <th class="column-title">Cuenta de Salida</th>                    
                     <th class="column-title">No. Cheque </th>
                     <th class="column-title" style="width:310px;">Folio Envio </th>
-                    <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;✓&nbsp;</th>
                     <th class="column-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;×&nbsp;</th>
-                    <?php if($_GET['s']==2){
+                    <?php 
+                    if($_GET['s']==2){
                     ?>
                     <th class="column-title">Autorizar</th>
                     <?php    
-                    }?>
+                    }
+                    ?>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
             <?php 
             $cont=0;
-                    while ($r=mysqli_fetch_array($query)) {
-                        $id=$r['id'];
-                        $no_cheque=$r['no_cheque'];
-                        $FolioSantander=$r['FolioSantander'];
-                        $status=$r['status'];
-                       
-                        switch($status)
-                        {
-                            case "0":
-                                $status="Recahzado";
-                            break;
+            while ($r=mysqli_fetch_array($query)) {
+               
+                switch($r['status'])
+                {
+                    case "0":
+                        $r['status']="Rechazado";
+                    break;
 
-                            case "1":
-                                $status="Pendiente";
-                            break;
+                    case "1":
+                        $r['status']="Pendiente";
+                    break;
 
-                            case "2":
-                                $status="Aceptado";
-                            break;
-                        }
-                        
-                        $monto=$r['monto'];
-                        
-                        if($r['bennombre']=="0")
-                        {
-                           
-                            $titular=$r['titular'];
-                        }else
-                        {
-                            $titular=$r['bennombre'];
-                        }
-                        $tipocuenta=$r['tipocuenta'];
+                    case "2":
+                        $r['status']="Aceptado";
+                    break;
+                }
+                
+                
+                if($r['bennombre']=="0")
+                {
+                   
+                    $titular=$r['titular'];
+                }else
+                {
+                    $titular=$r['bennombre'];
+                }
 
-                        
-                        $t_gasto=$r['t_cheque'];
-                        $t_gasto2=$r['t_cheque2'];
-                        $referencia=$r['referencia'];                        
-
-                        $periodo=$r['periodo'];
-                        $semana=$r['semana'];
-                        $concepto=$r['concepto'];
-                        //$programa=$r['programa'];
-                        $Cuenta=$r['Cuenta'];
-                        $cuentasalida=$r['cuentasalida'];
-                        $csid=$r['csid'];
-                        //$tipop=$r['tipopago'];
-                        $programa=$r['programa']; 
-                        $clasificacion=$r['descripcion']; 
-                        $tipopago=$r['tipopago'];
-                        $fecha_entrega=$r['fecha_confirm'];
-                        $fecha=$r['fecha'];
             ?>
-                <input type="hidden" value="<?php echo $titular;?>" id="name<?php echo $id;?>">
-                <input type="hidden" value="<?php echo $concepto;?>" id="concepto<?php echo $id;?>">
-                <input type="hidden" value="<?php echo $status;?>" id="status_user<?php echo $id;?>">
+                <input type="hidden" value="<?php echo $titular;?>" id="name<?php echo $r['id'];?>">
+                <input type="hidden" value="<?php echo $r['concepto'];?>" id="concepto<?php echo $r['id'];?>">
+                <input type="hidden" value="<?php echo $r['status'];?>" id="status_user<?php echo $r['id'];?>">
                 <?php
-                    if(verificar($id)!="1" && $t_gasto2=="1"  && $_SESSION['user_tipo']!="5")
+                    if(verificar($r['id'])!="1" && $r['t_cheque2']=="1"  && $_SESSION['user_tipo']!="5")
                     {}else{
                 ?>
 
                 <tr class="even pointer">
                 
-                    <td><div style="width:50px"><?php echo $periodo;?></div></td>
-                    <td><div style="width:50px"><?php echo $semana; ?></div></td>
-                
-                    <td><div style="width:120px"><?php echo $t_gasto;?></div></td>
-                    <td><div style="width:200px"><?php echo $clasificacion;?></div></td>
-                    <td><div style="width:200px"><?php echo $concepto;?></div></td>
+                    <td><div style="width:50px"><?php echo $r['periodo'];?></div></td>
+                    <td><div style="width:50px"><?php echo $r['semana']; ?></div></td>                
+                    <td><div style="width:120px"><?php echo $r['t_cheque'];?></div></td>
+                    <td><div style="width:200px"><?php echo $r['descripcion'];?></div></td>
+                    <td><div style="width:200px"><?php echo $r['concepto'];?></div></td>
                     <td><div style="width:200px"><?php echo utf8_encode($titular);?></div></td>
-                    <td><div style="width:200px"><?php echo $tipocuenta;?></div></td>
-                    <td><div style="width:100px"><?php echo $programa;?></div></td>
-                    <td><div style="width:150px"><?php echo $fecha; ?></div></td>
-                    <td><div style="width:150px">$<?php echo number_format($monto,2);?></div></td>
-                    <td><div style="width:150px"><?php echo $fecha_entrega; ?></div></td>
-                    <td><div style="width:150px"><?php echo $tipopago; ?></div></td>
-                    <td><div style="width:200px"><?php echo $Cuenta; ?></div></td>
+                    <td><div style="width:200px"><?php echo $r['tipocuenta'];?></div></td>
+                    <td><div style="width:100px"><?php echo $r['programa'];?></div></td>
+                    <td><div style="width:150px"><?php echo $r['fecha']; ?></div></td>
+                    <td><div style="width:150px">$<?php echo number_format($r['monto'],2);?></div></td>
+                    <td><div style="width:150px"><?php echo $r['fecha_confirm']; ?></div></td>
+                    <td><div style="width:150px"><?php echo $r['tipopago']; ?></div></td>
+                    <td><div style="width:200px"><?php echo $r['Cuenta']; ?></div></td>
                     <td>
                         <div style="width:200px">
                             <?php
-                            if ($r['status']=="1")
-                            {?> 
-                                <select class="form-control" data-id="<?php echo $id; ?>" id="cuentasalida" name="cuentasalida" required="required" onchange="Editarcuentasalida(this);">
-                                    <option value="<?php echo $csid;?>"><?php echo $cuentasalida;?></option>
+                            if ($r['status']=="Pendiente")
+                            {
+                                ?> 
+                                <select class="form-control" data-id="<?php echo $r['id']; ?>" id="cuentasalida" name="cuentasalida" required="required" onchange="Editarcuentasalida(this);">
+                                    <option value="<?php echo $r['csid'];?>"><?php echo $r['cuentasalida'];?></option>
                                     <optgroup>
                                     <?php
-                                    $categories = mysqli_query($con,"SELECT * from cuentasalida");
-                                    while ($cat=mysqli_fetch_array($categories)) { ?>
-                                    <option value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
-                                    <?php 
-                                    } 
+                                        echo GetCategoriasOptions();                                     
                                     ?>
-                                </optgroup>
+                                    </optgroup>
                                 </select>
                                  <?php
                             }else{
-                                echo $cuentasalida;
+                                echo $r['cuentasalida'];
                             }?>
                         </div>
                     </td>
                     <?php
-                    
-                    
-
-                        
-                        if($tipopago!="Transferencia"){
-                            if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']=="1")
-                            {
-                                ?>
-                                <td>
-                                <input class="form-control" style="width:120px" type="text" name="no_cheque" id="no_cheque<?php echo $cont;?>" placeholder="No. Cheque" >
-                                </td>
-                                <?php                            
-                            }else
-                            {
-                                ?>
-                                    <td><?php echo $no_cheque;?></td>
-                                <?php
-                            }
-
-                        }else{
-                            echo'<td></td>';
+                    if($r['tipopago']!="Transferencia"){
+                        if (($_SESSION['user_tipo']=="1" ||  $_SESSION['user_tipo']=="0") && $r['status']=="1")
+                        {
+                            ?>
+                            <td>
+                            <input class="form-control" style="width:120px" type="text" name="no_cheque" id="no_cheque<?php echo $cont;?>" placeholder="No. Cheque" >
+                            </td>
+                            <?php                            
+                        }else
+                        {
+                            ?>
+                                <td><?php echo $r['no_cheque'];?></td>
+                            <?php
                         }
+
+                    }else{
+                        echo'<td></td>';
+                    }
                         
                     
                     ?>
@@ -264,84 +247,112 @@
                     <?php
                     if ( $r['status']=="1")
                     {
-                        echo'<td><div style="width:300px"><input id="FS'.$id.'" type="text" class="form-control" name="FolioSantander" value="'.$FolioSantander.'" onkeyup="EditarFolioSantander(this);" data-id="'.$id.'"></div></td>';
+                        echo'<td><div style="width:300px"><input id="FS'.$r['id'].'" type="text" class="form-control" name="FolioSantander" value="'.$r['FolioSantander'].'" onkeyup="EditarFolioSantander(this);" data-id="'.$r['id'].'"></div></td>';
                     }else{
-                        echo'<td><div style="width:300px">'.$FolioSantander.'</div></td>';
+                        echo'<td><div style="width:300px">'.$r['FolioSantander'].'</div></td>';
                     }
                     
-                    echo'<td>';
                     if($_SESSION['user_tipo']=="1"  || $_SESSION['user_tipo']=="0")
                     {
-                        if($r['status']=="1"){
-                        ?>
-                         <td>   
-                           <div style="width:10px"><a id="a<?php echo $cont;?>" href="#" class='btn btn-success' title='Aceptar'  onclick="aceptar_cheque('<?php echo $id;?>','<?php echo $cont;?>','<?php echo $tipopago;?>');"data-toggle="modal" data-target=".bs-example-modal-lg-upd"><i class="fa fa-check"></i></a> </div>
-                         </td>
-                         <td>   
-                           <div style="width:10px"><a id="c<?php echo $cont;?>" href="#" class='btn btn-danger'  title='Rechazar' onclick="rechazar_cheque('<?php echo $id;?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a> </div>
-                         </td>
-                        <?php
-                        }else if($r['status']=="2")
-                        {
-                            ?>
-                           <td> 
-                                <center><div class="alert-success" style="width:80px"><i class="fa fa-check "></i>Aceptado</div></center>
-                            </td>                              
-                           <td> 
-                           <center><div style="width:10px"> <a  href="#" class='btn btn-danger' title='Cancelar' onclick="cancelar_cheque('<?php echo $id; ?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a>
-                           </div></center>
-                          </td> 
-                          
-                            <?php
-                        }else if($r['status']=="0"){
-                            ?>
-                            <td>
-                                <center><div class="alert-danger"><i class="fa fa-close"></i> Rechazado</div></center>
-                            <?php
-                        }
-                    }else{
+                        switch ($r['status']) {
+                            case 'Rechazado':
+                                ?>
+                                <td>
+                                    <center><div class="alert-danger"><i class="fa fa-close"></i> Rechazado</div></center>
+                                </td>
+                                <td>                                    
+                                </td>
+                                <?php
+                            break;
 
-                        if($r['status']=="2")
-                        {
-                            ?>
-                            <td>
-                                <center><div class="alert-success"><i class="fa fa-check "></i> Aceptado</div></center>
-                            <?php
-                        }else if($r['status']=="0")
-                        {
-                            ?>
-                            <td>
-                                <center><div class="alert-danger"><i class="fa fa-close"></i> Rechazado</div></center>
-                            <?php
-                        }else if($r['status']=="1")
-                        {
-                            ?>
-                            <td>
-                                <center><div class="alert-warning"><i class="fa fa-clock-o"></i> Pendiente</div></center>
-                            <?php
+                            case 'Pendiente':
+                                ?>
+                                 <td>   
+                                   <a id="a<?php echo $cont;?>" href="#" class='btn btn-success' title='Aceptar'  onclick="aceptar_cheque('<?php echo $r['id'];?>','<?php echo $cont;?>','<?php echo $r['tipopago'];?>');"data-toggle="modal" data-target=".bs-example-modal-lg-upd"><i class="fa fa-check"></i></a> 
+                                 </td>
+                                 <td>
+                                    <a id="c<?php echo $cont;?>" href="#" class='btn btn-danger'  title='Rechazar' onclick="rechazar_cheque('<?php echo $r['id'];?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a> 
+                                 </td>
+                                <?php
+                            break;
+
+                            case 'Aceptado':
+                                ?>
+                                <td>
+                                    <center><div class="alert-success" style="width:80px"><i class="fa fa-check "></i>Aceptado</div></center>
+                                </td>                              
+                                <td> 
+                                   <center>
+                                        <div style="width:10px"> <a  href="#" class='btn btn-danger' title='Cancelar' onclick="cancelar_cheque('<?php echo $r['id']; ?>','<?php echo $cont;?>')"><i class="fa fa-close"></i> </a>
+                                        </div>
+                                    </center>
+                                </td> 
+                              
+                                <?php
+                            break;
+                            
+                            
                         }
                         
-                     }
+                    }else{
+
+                        switch ($r['status']) {
+                            case 'Rechazado':
+                                ?>
+                                <td>
+                                    <center><div class="alert-danger"><i class="fa fa-close"></i> Rechazado</div></center>
+                                </td>
+                                <td>                                    
+                                </td>
+                                <?php
+                            break;
+
+                            case 'Pendiente':
+                                 ?>
+                                <td>
+                                    <center><div class="alert-warning"><i class="fa fa-clock-o"></i> Pendiente</div></center>
+                                </td>
+                                <td>                                    
+                                </td>
+                                <?php
+                            break;
+
+                            case 'Aceptado':
+                                    
+                                ?>
+                                <td>
+                                    <center><div class="alert-success"><i class="fa fa-check "></i> Aceptado</div></center>
+                                </td>
+                                <td>                                    
+                                </td>
+                                <?php
+                            break;
+                            
+                            
+                        }
+
+                       
+                        
+                    }
                     ?>
 
-                    </td>
-
-
                     <td>
-                        <?php if($_SESSION['user_tipo']=="1" && $_GET['s']==2 && $tipopago!='Cheque'){
-                            echo '<center><input type="checkbox" data-id="'.$id.'" name="autorizarcheck"></center>';
-                        }?>
+                        <?php 
+                        if($_SESSION['user_tipo']=="1" && $_GET['s']==2 && $r['tipopago']!='Cheque'){
+                            echo '<center><input type="checkbox" data-id="'.$r['id'].'" name="autorizarcheck"></center>';
+                        }
+                        ?>
                         
                     </td>
                     
                 </tr>
-            <?php
-        }
+                <?php
+                }
                 $cont++;
-                } //end while
+            } //end while
             ?>
             
-          </table>
+            </table>
         </div>
         <?php
         
